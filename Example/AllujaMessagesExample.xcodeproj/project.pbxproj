@@ -1,0 +1,622 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E4CFD2192748322C00E42CB7 /* AllujaMessagesExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2182748322C00E42CB7 /* AllujaMessagesExampleApp.swift */; };
+		E4CFD21B2748322C00E42CB7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD21A2748322C00E42CB7 /* ContentView.swift */; };
+		E4CFD21D2748322E00E42CB7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4CFD21C2748322E00E42CB7 /* Assets.xcassets */; };
+		E4CFD2202748322E00E42CB7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4CFD21F2748322E00E42CB7 /* Preview Assets.xcassets */; };
+		E4CFD22A2748322E00E42CB7 /* AllujaMessagesExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2292748322E00E42CB7 /* AllujaMessagesExampleTests.swift */; };
+		E4CFD2342748322E00E42CB7 /* AllujaMessagesExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2332748322E00E42CB7 /* AllujaMessagesExampleUITests.swift */; };
+		E4CFD2362748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2352748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E4CFD2262748322E00E42CB7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4CFD20D2748322C00E42CB7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E4CFD2142748322C00E42CB7;
+			remoteInfo = AllujaMessagesExample;
+		};
+		E4CFD2302748322E00E42CB7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4CFD20D2748322C00E42CB7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E4CFD2142748322C00E42CB7;
+			remoteInfo = AllujaMessagesExample;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		E4CFD2152748322C00E42CB7 /* AllujaMessagesExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AllujaMessagesExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4CFD2182748322C00E42CB7 /* AllujaMessagesExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleApp.swift; sourceTree = "<group>"; };
+		E4CFD21A2748322C00E42CB7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E4CFD21C2748322E00E42CB7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E4CFD21F2748322E00E42CB7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E4CFD2252748322E00E42CB7 /* AllujaMessagesExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AllujaMessagesExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4CFD2292748322E00E42CB7 /* AllujaMessagesExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleTests.swift; sourceTree = "<group>"; };
+		E4CFD22F2748322E00E42CB7 /* AllujaMessagesExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AllujaMessagesExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4CFD2332748322E00E42CB7 /* AllujaMessagesExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleUITests.swift; sourceTree = "<group>"; };
+		E4CFD2352748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E4CFD2432749640100E42CB7 /* AllujaMessages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AllujaMessages; path = ..; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E4CFD2122748322C00E42CB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4CFD2222748322E00E42CB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4CFD22C2748322E00E42CB7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E4CFD20C2748322C00E42CB7 = {
+			isa = PBXGroup;
+			children = (
+				E4CFD2422749640100E42CB7 /* Packages */,
+				E4CFD2172748322C00E42CB7 /* AllujaMessagesExample */,
+				E4CFD2282748322E00E42CB7 /* AllujaMessagesExampleTests */,
+				E4CFD2322748322E00E42CB7 /* AllujaMessagesExampleUITests */,
+				E4CFD2162748322C00E42CB7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E4CFD2162748322C00E42CB7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD2152748322C00E42CB7 /* AllujaMessagesExample.app */,
+				E4CFD2252748322E00E42CB7 /* AllujaMessagesExampleTests.xctest */,
+				E4CFD22F2748322E00E42CB7 /* AllujaMessagesExampleUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E4CFD2172748322C00E42CB7 /* AllujaMessagesExample */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD2182748322C00E42CB7 /* AllujaMessagesExampleApp.swift */,
+				E4CFD21A2748322C00E42CB7 /* ContentView.swift */,
+				E4CFD21C2748322E00E42CB7 /* Assets.xcassets */,
+				E4CFD21E2748322E00E42CB7 /* Preview Content */,
+			);
+			path = AllujaMessagesExample;
+			sourceTree = "<group>";
+		};
+		E4CFD21E2748322E00E42CB7 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD21F2748322E00E42CB7 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E4CFD2282748322E00E42CB7 /* AllujaMessagesExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD2292748322E00E42CB7 /* AllujaMessagesExampleTests.swift */,
+			);
+			path = AllujaMessagesExampleTests;
+			sourceTree = "<group>";
+		};
+		E4CFD2322748322E00E42CB7 /* AllujaMessagesExampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD2332748322E00E42CB7 /* AllujaMessagesExampleUITests.swift */,
+				E4CFD2352748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift */,
+			);
+			path = AllujaMessagesExampleUITests;
+			sourceTree = "<group>";
+		};
+		E4CFD2422749640100E42CB7 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD2432749640100E42CB7 /* AllujaMessages */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E4CFD2142748322C00E42CB7 /* AllujaMessagesExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4CFD2392748322E00E42CB7 /* Build configuration list for PBXNativeTarget "AllujaMessagesExample" */;
+			buildPhases = (
+				E4CFD2112748322C00E42CB7 /* Sources */,
+				E4CFD2122748322C00E42CB7 /* Frameworks */,
+				E4CFD2132748322C00E42CB7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AllujaMessagesExample;
+			productName = AllujaMessagesExample;
+			productReference = E4CFD2152748322C00E42CB7 /* AllujaMessagesExample.app */;
+			productType = "com.apple.product-type.application";
+		};
+		E4CFD2242748322E00E42CB7 /* AllujaMessagesExampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4CFD23C2748322E00E42CB7 /* Build configuration list for PBXNativeTarget "AllujaMessagesExampleTests" */;
+			buildPhases = (
+				E4CFD2212748322E00E42CB7 /* Sources */,
+				E4CFD2222748322E00E42CB7 /* Frameworks */,
+				E4CFD2232748322E00E42CB7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E4CFD2272748322E00E42CB7 /* PBXTargetDependency */,
+			);
+			name = AllujaMessagesExampleTests;
+			productName = AllujaMessagesExampleTests;
+			productReference = E4CFD2252748322E00E42CB7 /* AllujaMessagesExampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E4CFD22E2748322E00E42CB7 /* AllujaMessagesExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4CFD23F2748322E00E42CB7 /* Build configuration list for PBXNativeTarget "AllujaMessagesExampleUITests" */;
+			buildPhases = (
+				E4CFD22B2748322E00E42CB7 /* Sources */,
+				E4CFD22C2748322E00E42CB7 /* Frameworks */,
+				E4CFD22D2748322E00E42CB7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E4CFD2312748322E00E42CB7 /* PBXTargetDependency */,
+			);
+			name = AllujaMessagesExampleUITests;
+			productName = AllujaMessagesExampleUITests;
+			productReference = E4CFD22F2748322E00E42CB7 /* AllujaMessagesExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E4CFD20D2748322C00E42CB7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1300;
+				LastUpgradeCheck = 1300;
+				TargetAttributes = {
+					E4CFD2142748322C00E42CB7 = {
+						CreatedOnToolsVersion = 13.0;
+					};
+					E4CFD2242748322E00E42CB7 = {
+						CreatedOnToolsVersion = 13.0;
+						TestTargetID = E4CFD2142748322C00E42CB7;
+					};
+					E4CFD22E2748322E00E42CB7 = {
+						CreatedOnToolsVersion = 13.0;
+						TestTargetID = E4CFD2142748322C00E42CB7;
+					};
+				};
+			};
+			buildConfigurationList = E4CFD2102748322C00E42CB7 /* Build configuration list for PBXProject "AllujaMessagesExample" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E4CFD20C2748322C00E42CB7;
+			productRefGroup = E4CFD2162748322C00E42CB7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E4CFD2142748322C00E42CB7 /* AllujaMessagesExample */,
+				E4CFD2242748322E00E42CB7 /* AllujaMessagesExampleTests */,
+				E4CFD22E2748322E00E42CB7 /* AllujaMessagesExampleUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E4CFD2132748322C00E42CB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4CFD2202748322E00E42CB7 /* Preview Assets.xcassets in Resources */,
+				E4CFD21D2748322E00E42CB7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4CFD2232748322E00E42CB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4CFD22D2748322E00E42CB7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E4CFD2112748322C00E42CB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4CFD21B2748322C00E42CB7 /* ContentView.swift in Sources */,
+				E4CFD2192748322C00E42CB7 /* AllujaMessagesExampleApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4CFD2212748322E00E42CB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4CFD22A2748322E00E42CB7 /* AllujaMessagesExampleTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E4CFD22B2748322E00E42CB7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4CFD2362748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift in Sources */,
+				E4CFD2342748322E00E42CB7 /* AllujaMessagesExampleUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E4CFD2272748322E00E42CB7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E4CFD2142748322C00E42CB7 /* AllujaMessagesExample */;
+			targetProxy = E4CFD2262748322E00E42CB7 /* PBXContainerItemProxy */;
+		};
+		E4CFD2312748322E00E42CB7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E4CFD2142748322C00E42CB7 /* AllujaMessagesExample */;
+			targetProxy = E4CFD2302748322E00E42CB7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E4CFD2372748322E00E42CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E4CFD2382748322E00E42CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E4CFD23A2748322E00E42CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AllujaMessagesExample/Preview Content\"";
+				DEVELOPMENT_TEAM = Z74U5327X4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alluja.AllujaMessagesExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E4CFD23B2748322E00E42CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AllujaMessagesExample/Preview Content\"";
+				DEVELOPMENT_TEAM = Z74U5327X4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alluja.AllujaMessagesExample;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E4CFD23D2748322E00E42CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z74U5327X4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alluja.AllujaMessagesExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AllujaMessagesExample.app/AllujaMessagesExample";
+			};
+			name = Debug;
+		};
+		E4CFD23E2748322E00E42CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z74U5327X4;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alluja.AllujaMessagesExampleTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AllujaMessagesExample.app/AllujaMessagesExample";
+			};
+			name = Release;
+		};
+		E4CFD2402748322E00E42CB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z74U5327X4;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alluja.AllujaMessagesExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AllujaMessagesExample;
+			};
+			name = Debug;
+		};
+		E4CFD2412748322E00E42CB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Z74U5327X4;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alluja.AllujaMessagesExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AllujaMessagesExample;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E4CFD2102748322C00E42CB7 /* Build configuration list for PBXProject "AllujaMessagesExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4CFD2372748322E00E42CB7 /* Debug */,
+				E4CFD2382748322E00E42CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4CFD2392748322E00E42CB7 /* Build configuration list for PBXNativeTarget "AllujaMessagesExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4CFD23A2748322E00E42CB7 /* Debug */,
+				E4CFD23B2748322E00E42CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4CFD23C2748322E00E42CB7 /* Build configuration list for PBXNativeTarget "AllujaMessagesExampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4CFD23D2748322E00E42CB7 /* Debug */,
+				E4CFD23E2748322E00E42CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4CFD23F2748322E00E42CB7 /* Build configuration list for PBXNativeTarget "AllujaMessagesExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4CFD2402748322E00E42CB7 /* Debug */,
+				E4CFD2412748322E00E42CB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E4CFD20D2748322C00E42CB7 /* Project object */;
+}
