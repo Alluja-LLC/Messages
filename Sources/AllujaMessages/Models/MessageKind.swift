@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 public enum MessageKind {
-    case text(AttributedString)
+    case text(TextItem)
     
     case system([AttributedString])
     
