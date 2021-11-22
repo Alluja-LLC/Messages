@@ -8,9 +8,10 @@
 import Foundation
 import SwiftUI
 
-public protocol MessageType: Identifiable {
+public protocol MessageType: Identifiable, Equatable {
     /// Optional to allow for special messages without a sender
-    var sender: SenderType? { get }
+    associatedtype Sender: SenderType
+    var sender: Sender? { get }
     
     /// Unique ID that identifies this message
     var id: String { get }
@@ -28,7 +29,10 @@ public protocol MessageType: Identifiable {
     var customFooter: AnyView? { get }
 }
 
-public protocol SenderType {
+public protocol SenderType: Identifiable {
+    /// Unique ID for each sender
+    var id: String { get }
+    
     /// Display name for each sender
     var displayName: String { get }
     

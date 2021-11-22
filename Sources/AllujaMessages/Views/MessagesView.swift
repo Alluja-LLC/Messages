@@ -14,21 +14,38 @@ public struct MessagesView<Message: MessageType>: View {
     
     public init(withMessages messages: [Message]) {
         self.messages = messages
+        
+        self.context.messageEndsGroup = { message in
+            let index = messages.firstIndex(of: message)!
+            if index == messages.count - 1 {
+                return true
+            }
+            
+            // Split if last message was sent more than 5 minutes ago or the sender changes
+            return message.timestamp.addingTimeInterval(5 * 60) < messages[index + 1].timestamp || message.sender?.id != messages[index + 1].sender?.id
+        }
     }
     
     private var sortedMessages: [Message] {
         messages.sorted(by: { $0.timestamp < $1.timestamp })
     }
     
-    private struct MessageGroup: Identifiable {
-        let messages: [Message]
+    private var groupedSortedMessages: [MessageGroup<Message>] {
+        // Iterate over each message and see if the next one is last
+        var completeGroups: [MessageGroup<Message>] = []
+        var currentGroup: [Message] = []
+        for message in sortedMessages {
+            if !self.context.messageEndsGroup(message) {
+                currentGroup.append(message)
+            } else {
+                completeGroups.append(.init(messages: currentGroup))
+                currentGroup.removeAll()
+            }
+        }
         
-        let id = UUID()
-    }
-    
-    private var groupedSortedMessages: [MessageGroup] {
-        // Iterate over each message and see if the next one 
-        []
+        // Get last group if needed
+        completeGroups.append(.init(messages: currentGroup))
+        return completeGroups
     }
     
     public var body: some View {
@@ -40,7 +57,7 @@ public struct MessagesView<Message: MessageType>: View {
                 }
             } else { // Otherwise use grouped message renderer
                 ForEach(groupedSortedMessages, id: \.id) { messageGroup in
-                    
+                    GroupedMessageView(messageGroup: messageGroup)
                 }
             }
         }
@@ -50,8 +67,14 @@ public struct MessagesView<Message: MessageType>: View {
     }
 }
 
+internal struct MessageGroup<Message: MessageType>: Identifiable {
+    let messages: [Message]
+    
+    let id = UUID()
+}
+
 internal struct MessagePreview: MessageType {
-    var sender: SenderType? {
+    var sender: SenderPreview? {
         nil
     }
     

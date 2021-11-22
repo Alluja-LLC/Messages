@@ -11,11 +11,11 @@ internal struct MessageView<Message: MessageType>: View {
     let message: Message
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("Hello, World!")
     }
 }
 
-fileprivate struct SwiftUIView_Previews: PreviewProvider {
+fileprivate struct MessageView_Previews: PreviewProvider {
     static var previews: some View {
         MessageView(message: MessagePreview())
     }

@@ -7,14 +7,16 @@
 
 import SwiftUI
 
-struct SwiftUIView: View {
+internal struct GroupedMessageView<Message: MessageType>: View {
+    let messageGroup: MessageGroup<Message>
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("Hello, World!")
     }
 }
 
-struct SwiftUIView_Previews: PreviewProvider {
+struct GroupedMessageView_Previews: PreviewProvider {
     static var previews: some View {
-        SwiftUIView()
+        GroupedMessageView(messageGroup: MessageGroup<MessagePreview>(messages: []))
     }
 }

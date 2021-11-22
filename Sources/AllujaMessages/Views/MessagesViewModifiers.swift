@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 extension MessagesView {
-    enum MessageGroupingOption {
+    public enum MessageGroupingOption {
         /// Hides profile picture for all but last message in chain from single sender
         case collapseProfilePicture
         
@@ -42,10 +42,15 @@ extension MessagesView {
         
         /// Whether or not to show message timestamps on a lswipe
         @Published var showTimestampOnSwipe: Bool = false
+        
+        /// Determines whether or not the current message is the last one in a group
+        @Published var messageEndsGroup: (Message) -> Bool = { message in
+            return true
+        }
     }
     
     /// Adds a custom renderer to use with a certain kind of custom message
-    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder _ renderer: @escaping (Message) -> CustomView) -> MessagesView {
+    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder renderer: @escaping (Message) -> CustomView) -> MessagesView {
         self.context.customRenderers.append(.init(id: typeID, renderer: { (message) in
             return AnyView(renderer(message))
         }))
@@ -70,6 +75,13 @@ extension MessagesView {
     /// Sets whether or not to show message timestamp on swipe
     public func showTimestampOnSwipe(_ showTimestamp: Bool) -> MessagesView {
         self.context.showTimestampOnSwipe = showTimestamp
+        
+        return self
+    }
+    
+    /// Sets the rule for whether or not a message ends a group
+    public func configureMessageEndsGroup(rule: @escaping (Message) -> Bool) -> MessagesView {
+        self.context.messageEndsGroup = rule
         
         return self
     }
