@@ -7,32 +7,36 @@
 
 import SwiftUI
 
-internal struct ProfilePictureView<Sender: SenderType>: View {
-    let sender: Sender
+internal struct ProfilePictureView<SenderT: SenderType>: View {
+    let sender: SenderT
 
-    init(forSender sender: Sender) {
+    init(forSender sender: SenderT) {
         self.sender = sender
     }
 
     var body: some View {
-        Group {
-            if let data = sender.profileImageData, let image = UIImage(data: data) {
-                Image(uiImage: image)
-            } else if let url = sender.profileImageURL {
-                AsyncImage(url: url, scale: 1.0, content: { phase in
-                    if case .success(let image) = phase {
-                        image
-                    } else if let placeholder = sender.placeholder(forPhase: phase) {
-                        placeholder
-                    } else {
-                        ProgressView()
-                    }
-                })
-            } else {
-                ProgressView()
+        VStack {
+            Spacer()
+            
+            Group {
+                if let data = sender.profileImageData, let image = UIImage(data: data) {
+                    Image(uiImage: image)
+                } else if let url = sender.profileImageURL {
+                    AsyncImage(url: url, scale: 1.0, content: { phase in
+                        if case .success(let image) = phase {
+                            image
+                        } else if let placeholder = sender.placeholder(forPhase: phase) {
+                            placeholder
+                        } else {
+                            ProgressView()
+                        }
+                    })
+                } else {
+                    EmptyView()
+                }
             }
+            .clipShape(Circle())
         }
-        .clipShape(Circle())
     }
 }
 

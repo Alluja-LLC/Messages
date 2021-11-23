@@ -8,8 +8,8 @@
 import Foundation
 import SwiftUI
 
-internal struct MessageGroup<Message: MessageType>: Identifiable {
-    let messages: [Message]
+internal struct MessageGroup<MessageT: MessageType>: Identifiable {
+    let messages: [MessageT]
 
     let id = UUID()
 }

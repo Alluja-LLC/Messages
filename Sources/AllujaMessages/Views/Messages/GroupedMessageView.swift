@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-internal struct GroupedMessageView<Message: MessageType>: View {
-    let messageGroup: MessageGroup<Message>
-    let context: MessagesView<Message>.MessagesViewContext
+internal struct GroupedMessageView<MessageT: MessageType, InputBarT: View>: View {
+    let messageGroup: MessageGroup<MessageT>
+    let context: MessagesView<MessageT, InputBarT>.MessagesViewContext
 
     var shouldCollapseProfilePicture: Bool {
         context.groupingOptions.contains(.collapseProfilePicture)
@@ -67,7 +67,21 @@ internal struct GroupedMessageView<Message: MessageType>: View {
                     }
 
                     AlignerView(alignment: message.sender.position) {
-                        Group {
+                        VStack {
+                            if let header = message.customHeader {
+                                HStack {
+                                    if message.sender.position == .right {
+                                        Spacer()
+                                    }
+                                    
+                                    header
+                                    
+                                    if message.sender.position == .left {
+                                        Spacer()
+                                    }
+                                }
+                            }
+                            
                             switch message.kind {
                             case .text(let textItem):
                                 TextView(forItem: textItem)
@@ -80,6 +94,20 @@ internal struct GroupedMessageView<Message: MessageType>: View {
                                     renderer(message)
                                 } else {
                                     Text("No Renderer Found for ID \(customItem.id) :(")
+                                }
+                            }
+                            
+                            if let footer = message.customFooter {
+                                HStack {
+                                    if message.sender.position == .right {
+                                        Spacer()
+                                    }
+                                    
+                                    footer
+                                    
+                                    if message.sender.position == .left {
+                                        Spacer()
+                                    }
                                 }
                             }
                         }
@@ -117,6 +145,6 @@ internal struct GroupedMessageView<Message: MessageType>: View {
 
 private struct GroupedMessageView_Previews: PreviewProvider {
     static var previews: some View {
-        GroupedMessageView(messageGroup: MessageGroup<MessagePreview>(messages: []), context: .init())
+        GroupedMessageView<MessagePreview, EmptyView>(messageGroup: MessageGroup<MessagePreview>(messages: []), context: .init())
     }
 }

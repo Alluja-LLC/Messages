@@ -14,6 +14,9 @@
 		E4CFD22A2748322E00E42CB7 /* AllujaMessagesExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2292748322E00E42CB7 /* AllujaMessagesExampleTests.swift */; };
 		E4CFD2342748322E00E42CB7 /* AllujaMessagesExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2332748322E00E42CB7 /* AllujaMessagesExampleUITests.swift */; };
 		E4CFD2362748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2352748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift */; };
+		E4CFD246274D20C400E42CB7 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD245274D20C400E42CB7 /* Message.swift */; };
+		E4CFD249274D211500E42CB7 /* AllujaMessages in Frameworks */ = {isa = PBXBuildFile; productRef = E4CFD248274D211500E42CB7 /* AllujaMessages */; };
+		E4CFD24C274D245B00E42CB7 /* MessageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD24B274D245B00E42CB7 /* MessageGenerator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +48,8 @@
 		E4CFD2332748322E00E42CB7 /* AllujaMessagesExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleUITests.swift; sourceTree = "<group>"; };
 		E4CFD2352748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		E4CFD2432749640100E42CB7 /* AllujaMessages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AllujaMessages; path = ..; sourceTree = "<group>"; };
+		E4CFD245274D20C400E42CB7 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		E4CFD24B274D245B00E42CB7 /* MessageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageGenerator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4CFD249274D211500E42CB7 /* AllujaMessages in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +102,8 @@
 		E4CFD2172748322C00E42CB7 /* AllujaMessagesExample */ = {
 			isa = PBXGroup;
 			children = (
+				E4CFD24A274D244F00E42CB7 /* Generators */,
+				E4CFD244274D20AE00E42CB7 /* Models */,
 				E4CFD2182748322C00E42CB7 /* AllujaMessagesExampleApp.swift */,
 				E4CFD21A2748322C00E42CB7 /* ContentView.swift */,
 				E4CFD21C2748322E00E42CB7 /* Assets.xcassets */,
@@ -137,6 +145,22 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		E4CFD244274D20AE00E42CB7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD245274D20C400E42CB7 /* Message.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E4CFD24A274D244F00E42CB7 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				E4CFD24B274D245B00E42CB7 /* MessageGenerator.swift */,
+			);
+			path = Generators;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -153,6 +177,9 @@
 			dependencies = (
 			);
 			name = AllujaMessagesExample;
+			packageProductDependencies = (
+				E4CFD248274D211500E42CB7 /* AllujaMessages */,
+			);
 			productName = AllujaMessagesExample;
 			productReference = E4CFD2152748322C00E42CB7 /* AllujaMessagesExample.app */;
 			productType = "com.apple.product-type.application";
@@ -267,6 +294,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4CFD246274D20C400E42CB7 /* Message.swift in Sources */,
+				E4CFD24C274D245B00E42CB7 /* MessageGenerator.swift in Sources */,
 				E4CFD21B2748322C00E42CB7 /* ContentView.swift in Sources */,
 				E4CFD2192748322C00E42CB7 /* AllujaMessagesExampleApp.swift in Sources */,
 			);
@@ -447,7 +476,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -477,7 +506,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -617,6 +646,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E4CFD248274D211500E42CB7 /* AllujaMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AllujaMessages;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E4CFD20D2748322C00E42CB7 /* Project object */;
 }

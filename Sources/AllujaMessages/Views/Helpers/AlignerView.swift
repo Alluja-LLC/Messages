@@ -7,24 +7,24 @@
 
 import SwiftUI
 
-struct AlignerView<Wrapped: View>: View {
+struct AlignerView<WrappedT: View>: View {
     let alignment: SenderAlignment
-    let view: () -> Wrapped
+    let view: () -> WrappedT
 
     var body: some View {
         GeometryReader { geometry in
             switch alignment {
             case .left:
                 HStack {
-                    Spacer()
                     view().frame(width: geometry.size.width * 3 / 4)
+                    Spacer()
                 }
             case .center:
                 view()
             case .right:
                 HStack {
-                    view().frame(width: geometry.size.width * 3 / 4)
                     Spacer()
+                    view().frame(width: geometry.size.width * 3 / 4)
                 }
             }
         }

@@ -10,8 +10,8 @@ import SwiftUI
 
 public protocol MessageType: Identifiable, Equatable {
     /// Sender of the message
-    associatedtype Sender: SenderType
-    var sender: Sender { get }
+    associatedtype SenderT: SenderType
+    var sender: SenderT { get }
 
     /// Unique ID that identifies this message
     var id: String { get }

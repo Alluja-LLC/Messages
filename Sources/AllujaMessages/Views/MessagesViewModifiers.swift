@@ -23,13 +23,13 @@ extension MessagesView {
         struct CustomRendererConfiguration: Identifiable {
             let id: String
 
-            let renderer: (Message) -> AnyView
+            let renderer: (MessageT) -> AnyView
         }
 
         /// Custom renderers added to handle custom message types
         @Published var customRenderers: [CustomRendererConfiguration] = []
 
-        func customRenderer(forID id: String) -> ((Message) -> AnyView)? {
+        func customRenderer(forID id: String) -> ((MessageT) -> AnyView)? {
             if let renderer = customRenderers.first(where: { $0.id == id }) {
                 return renderer.renderer
             }
@@ -50,7 +50,7 @@ extension MessagesView {
         @Published var showTimestampOnSwipe: Bool = false
 
         /// Determines whether or not the current message is the last one in a group, defined in `MessagesView.swift` to allow for access to `messages` array
-        @Published var messageEndsGroup: (Message) -> Bool = { _ in
+        @Published var messageEndsGroup: (MessageT) -> Bool = { _ in
             return true
         }
 
@@ -59,7 +59,7 @@ extension MessagesView {
     }
 
     /// Adds a custom renderer to use with a certain kind of custom message
-    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder renderer: @escaping (Message) -> CustomView) -> MessagesView {
+    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder renderer: @escaping (MessageT) -> CustomView) -> MessagesView {
         self.context.customRenderers.append(.init(id: typeID, renderer: { (message) in
             return AnyView(renderer(message))
         }))
@@ -89,7 +89,7 @@ extension MessagesView {
     }
 
     /// Sets the rule for whether or not a message ends a group
-    public func configureMessageEndsGroup(rule: @escaping (Message) -> Bool) -> MessagesView {
+    public func configureMessageEndsGroup(rule: @escaping (MessageT) -> Bool) -> MessagesView {
         self.context.messageEndsGroup = rule
 
         return self
@@ -99,6 +99,13 @@ extension MessagesView {
     public func imageViewScale(_ scale: CGFloat) -> MessagesView {
         self.context.imageViewScale = scale
 
+        return self
+    }
+    
+    /// Sets the refresh action
+    public func refreshAction(onRefresh: @escaping @Sendable () async -> Void) -> MessagesView {
+        self.context.refreshAction = onRefresh
+        
         return self
     }
 }
