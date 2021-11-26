@@ -27,6 +27,7 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 Text("Loaded \(messages.count) messages")
+                    .foregroundColor(.green)
                 MessagesView(withMessages: messages, withInputBar: {
                     HStack {
                         // Hack to get TextEditor to have resizeable height
@@ -37,16 +38,19 @@ struct ContentView: View {
                             .frame(maxWidth: .infinity)
                             .overlay(
                                 TextEditor(text: $messageBar)
+                                    .cornerRadius(4)
                             )
                         
                         Button("Send") {
-                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                            messages.append(.init(kind: .text(TextMessage(text: AttributedString(messageBar, attributes: AttributeContainer([.foregroundColor: UIColor.white])), isClient: true)), sender: senders[0]))
+                            messageBar = ""
+                            // UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                         }
                         .buttonStyle(.borderedProminent)
                     }
                     .padding([.top, .bottom], 8)
                     .padding([.leading, .trailing])
-                    .background(Color(uiColor: .systemGray6).edgesIgnoringSafeArea(.bottom))
+                    .background(Color(uiColor: .systemGray6).edgesIgnoringSafeArea([.leading, .trailing, .bottom]))
                 })
                 .refreshAction {
                     print("REFRESH")

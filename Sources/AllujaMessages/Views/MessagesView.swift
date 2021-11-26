@@ -52,58 +52,70 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
     }
 
     public var body: some View {
-        GeometryReader { geometry in
-            VStack {
-                GeometryReader { innerGeometry in
-                    ScrollView {
+        VStack {
+            GeometryReader { geometry in
+                ScrollView {
+                    ScrollViewReader { value in
                         // If no grouping options enabled, just render normally
                         if context.groupingOptions.isEmpty {
                             ForEach(messages, id: \.id) { message in
                                 MessageView(message: message, context: context)
-                                    .padding([.top, .bottom])
+                                    .padding([.top, .bottom], 2)
+                            }
+                            .onAppear {
+                                value.scrollTo(messages.last?.id, anchor: .bottom)
+                            }
+                            .onChange(of: messages.count) { newCount in
+                                guard newCount > 0 else { return }
+                                print("CHANGE!!!")
+                                value.scrollTo(sortedMessages.last!.id, anchor: .bottom)
                             }
                         } else { // Otherwise use grouped message renderer
                             ForEach(groupedSortedMessages, id: \.id) { messageGroup in
                                 GroupedMessageView(messageGroup: messageGroup, context: context)
                             }
+                            .onAppear {
+                                value.scrollTo(groupedSortedMessages.last?.id, anchor: .bottom)
+                            }
+                            .onChange(of: messages.count) { _ in
+                                value.scrollTo(groupedSortedMessages.last?.id, anchor: .bottom)
+                            }
                         }
                     }
-                    .if(context.refreshAction != nil) {
-                        $0.refreshable(action: context.refreshAction!)
+                }
+                .messageWidth(geometry.size.width * 3 / 4)
+                .if(context.refreshAction != nil) {
+                    $0.refreshable(action: context.refreshAction!)
+                }
+                .contentShape(Rectangle()) // Make sure hit testing covers entire area
+                .if (focusInput) {
+                    $0.onTapGesture {
+                        focusInput = false
                     }
-                    .padding([.leading, .trailing])
-                    .frame(width: innerGeometry.size.width, height: innerGeometry.size.height)
-                    .contentShape(Rectangle()) // Make sure hit testing covers entire area
-                    .if (focusInput) {
-                        $0.onTapGesture {
-                            focusInput = false
-                        }
-                    }
-                    .imageViewScale(context.imageViewScale)
+                }
+                .imageViewScale(context.imageViewScale)
+            }
+            
+            /*(.toolbar(content: {
+                // Allows for a pseudo-inputAccesoryView by changing focus states and having a fake input bar copy
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Button(action: {
+                        focusInput = true
+                    }, label: {
+                        inputBar()
+                            .disabled(focusInput)
+                    })
+                    .buttonStyle(.plain)
                 }
                 
-                /*(.toolbar(content: {
-                    // Allows for a pseudo-inputAccesoryView by changing focus states and having a fake input bar copy
-                    ToolbarItemGroup(placement: .bottomBar) {
-                        Button(action: {
-                            focusInput = true
-                        }, label: {
-                            inputBar()
-                                .disabled(focusInput)
-                        })
-                        .buttonStyle(.plain)
-                    }
-                    
-                    ToolbarItemGroup(placement: .keyboard) {
-                        inputBar()
-                            .focused($focusInput)
-                    }
-                })*/
-                
-                inputBar()
-                    .focused($focusInput)
-            }
-            .frame(width: geometry.size.width, height: geometry.size.height)
+                ToolbarItemGroup(placement: .keyboard) {
+                    inputBar()
+                        .focused($focusInput)
+                }
+            })*/
+            
+            inputBar()
+                .focused($focusInput)
         }
     }
 }

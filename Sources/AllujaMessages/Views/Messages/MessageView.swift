@@ -8,6 +8,7 @@
 import SwiftUI
 
 internal struct MessageView<MessageT: MessageType, InputBarT: View>: View {
+    @Environment(\.messageWidth) var width
     let message: MessageT
     let context: MessagesView<MessageT, InputBarT>.MessagesViewContext
 
@@ -17,48 +18,49 @@ internal struct MessageView<MessageT: MessageType, InputBarT: View>: View {
                 ProfilePictureView(forSender: message.sender)
             }
             
-            AlignerView(alignment: message.sender.position) {
-                VStack {
-                    if let header = message.customHeader {
-                        HStack {
-                            if message.sender.position == .right {
-                                Spacer()
-                            }
-                            
-                            header
-                            
-                            if message.sender.position == .left {
-                                Spacer()
-                            }
+            VStack(alignment: message.sender.position == .left ? .leading : .trailing, spacing: 2) {
+                if let header = message.customHeader {
+                    HStack {
+                        if message.sender.position == .right {
+                            Spacer()
+                        }
+                        
+                        header
+                        
+                        if message.sender.position == .left {
+                            Spacer()
                         }
                     }
-                    
-                    switch message.kind {
-                    case .text(let textItem):
-                        TextView(forItem: textItem)
-                    case .system(let strings):
-                        SystemView(messageText: strings)
-                    case .image(let imageItem):
-                        ImageView(forItem: imageItem)
-                    case .custom(let customItem):
-                        if let renderer = context.customRenderer(forID: customItem.id) {
-                            renderer(message)
-                        } else {
-                            Text("No Renderer Found for ID \(customItem.id) :(")
-                        }
+                }
+                
+                let messageAlignment: Alignment = message.sender.position == .left ? .leading : .trailing
+                switch message.kind {
+                case .text(let textItem):
+                    TextView(forItem: textItem)
+                        .frame(width: width, alignment: messageAlignment)
+                case .system(let strings):
+                    SystemView(messageText: strings)
+                case .image(let imageItem):
+                    ImageView(forItem: imageItem)
+                        .frame(width: width, alignment: messageAlignment)
+                case .custom(let customItem):
+                    if let renderer = context.customRenderer(forID: customItem.id) {
+                        renderer(message)
+                    } else {
+                        Text("No Renderer Found for ID \(customItem.id) :(")
                     }
-                    
-                    if let footer = message.customFooter {
-                        HStack {
-                            if message.sender.position == .right {
-                                Spacer()
-                            }
-                            
-                            footer
-                            
-                            if message.sender.position == .left {
-                                Spacer()
-                            }
+                }
+                
+                if let footer = message.customFooter {
+                    HStack {
+                        if message.sender.position == .right {
+                            Spacer()
+                        }
+                        
+                        footer
+                        
+                        if message.sender.position == .left {
+                            Spacer()
                         }
                     }
                 }

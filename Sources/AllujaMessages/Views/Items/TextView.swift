@@ -16,13 +16,12 @@ struct TextView: View {
     }
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: cornerRadius)
-                .foregroundColor(item.backgroundColor)
-
-            Text(item.text)
-                .padding(2)
-        }
+        Text(item.text)
+            .fixedSize(horizontal: false, vertical: true)
+            .multilineTextAlignment(.leading)
+            .padding(4)
+            .background(RoundedRectangle(cornerRadius: cornerRadius)
+                            .foregroundColor(item.backgroundColor))
     }
 }
 

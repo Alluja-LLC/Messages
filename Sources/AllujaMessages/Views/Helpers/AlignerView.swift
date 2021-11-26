@@ -12,21 +12,30 @@ struct AlignerView<WrappedT: View>: View {
     let view: () -> WrappedT
 
     var body: some View {
-        GeometryReader { geometry in
-            switch alignment {
-            case .left:
-                HStack {
-                    view().frame(width: geometry.size.width * 3 / 4)
-                    Spacer()
-                }
-            case .center:
+        switch alignment {
+        case .left:
+            HStack {
                 view()
-            case .right:
-                HStack {
+                GeometryReader { geometry in
                     Spacer()
-                    view().frame(width: geometry.size.width * 3 / 4)
+                        .frame(width: geometry.size.width / 2)
                 }
             }
+            .border(.purple, width: 2)
+        case .center:
+            view()
+        case .right:
+            GeometryReader { geometry in
+                HStack {
+                    Spacer()
+                        .frame(width: geometry.size.width / 4)
+                    view()
+                        .frame(maxHeight: .infinity)
+                }
+                .frame(height: geometry.size.height)
+            }
+            .frame(maxHeight: .infinity)
+            .border(.purple, width: 2)
         }
     }
 }
