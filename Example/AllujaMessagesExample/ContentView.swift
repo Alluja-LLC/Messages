@@ -47,6 +47,8 @@ struct ContentView: View {
                             // UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                         }
                         .buttonStyle(.borderedProminent)
+                        .disabled(messageBar.isEmpty)
+                        .animation(.easeInOut(duration: 0.2), value: messageBar.isEmpty)
                     }
                     .padding([.top, .bottom], 8)
                     .padding([.leading, .trailing])

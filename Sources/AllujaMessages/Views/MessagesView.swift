@@ -60,25 +60,25 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                         if context.groupingOptions.isEmpty {
                             ForEach(messages, id: \.id) { message in
                                 MessageView(message: message, context: context)
+                                    .id(message.id)
                                     .padding([.top, .bottom], 2)
                             }
                             .onAppear {
-                                value.scrollTo(messages.last?.id, anchor: .bottom)
+                                value.scrollTo(sortedMessages.last?.id, anchor: .center)
                             }
-                            .onChange(of: messages.count) { newCount in
+                            .onChange(of: sortedMessages.count) { newCount in
                                 guard newCount > 0 else { return }
-                                print("CHANGE!!!")
-                                value.scrollTo(sortedMessages.last!.id, anchor: .bottom)
+                                value.scrollTo(sortedMessages.last!.id, anchor: .center)
                             }
                         } else { // Otherwise use grouped message renderer
                             ForEach(groupedSortedMessages, id: \.id) { messageGroup in
                                 GroupedMessageView(messageGroup: messageGroup, context: context)
                             }
                             .onAppear {
-                                value.scrollTo(groupedSortedMessages.last?.id, anchor: .bottom)
+                                value.scrollTo(groupedSortedMessages.last?.id, anchor: .center)
                             }
                             .onChange(of: messages.count) { _ in
-                                value.scrollTo(groupedSortedMessages.last?.id, anchor: .bottom)
+                                value.scrollTo(groupedSortedMessages.last?.id, anchor: .center)
                             }
                         }
                     }

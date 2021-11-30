@@ -21,6 +21,12 @@ struct TextMessage: TextItem {
 }
 
 struct Message: MessageType {
+    init(kind: MessageKind, sender: Sender) {
+        self.sender = sender
+        self.id = UUID().uuidString
+        self.kind = kind
+    }
+    
     let timestamp: Date = Date()
     
     let kind: MessageKind
@@ -37,9 +43,7 @@ struct Message: MessageType {
     
     let sender: Sender
     
-    var id: String {
-        UUID().uuidString
-    }
+    let id: String
 }
 
 struct Sender: SenderType {
