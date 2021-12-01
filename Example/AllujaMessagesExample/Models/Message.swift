@@ -21,6 +21,8 @@ struct TextMessage: TextItem {
 }
 
 struct Message: MessageType {
+    var timestampSize: CGSize = .zero
+    
     init(kind: MessageKind, sender: Sender) {
         self.sender = sender
         self.id = UUID().uuidString

@@ -18,9 +18,12 @@ fileprivate let senders: [Sender] = [
 struct ContentView: View {
     @State private var messages: [Message]
     @State private var messageBar: String = ""
+    let messageFormatter: DateFormatter
     
     init() {
         _messages = State(initialValue: MessageGenerator.generateMessages(fromAuthors: senders, clumpRange: 1...3, clumpQuantity: 5))
+        messageFormatter = DateFormatter()
+        messageFormatter.dateFormat = "MMM d, h:mm a"
     }
     
     var body: some View {
@@ -54,6 +57,7 @@ struct ContentView: View {
                     .padding([.leading, .trailing])
                     .background(Color(uiColor: .systemGray6).edgesIgnoringSafeArea([.leading, .trailing, .bottom]))
                 })
+                    .messageDateFormatter(messageFormatter)
                 .refreshAction {
                     print("REFRESH")
                 }

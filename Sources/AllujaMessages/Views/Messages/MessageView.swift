@@ -38,8 +38,8 @@ internal struct MessageView<MessageT: MessageType, InputBarT: View>: View {
                 case .text(let textItem):
                     TextView(forItem: textItem)
                         .frame(width: width, alignment: messageAlignment)
-                case .system(let strings):
-                    SystemView(messageText: strings)
+                case .system(let string):
+                    SystemView(messageText: string)
                 case .image(let imageItem):
                     ImageView(forItem: imageItem)
                         .frame(width: width, alignment: messageAlignment)

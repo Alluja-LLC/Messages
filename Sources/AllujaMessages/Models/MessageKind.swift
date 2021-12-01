@@ -10,7 +10,7 @@ import Foundation
 public enum MessageKind {
     case text(TextItem)
 
-    case system([AttributedString])
+    case system(AttributedString)
 
     case image(ImageItem)
 

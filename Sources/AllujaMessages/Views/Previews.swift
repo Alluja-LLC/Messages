@@ -40,6 +40,8 @@ internal struct ImagePreview: ImageItem {
 }
 
 internal struct MessagePreview: MessageType {
+    var timestampSize: CGSize = .zero
+    
     var sender: SenderPreview {
         SenderPreview()
     }

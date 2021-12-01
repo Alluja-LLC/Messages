@@ -85,8 +85,8 @@ internal struct GroupedMessageView<MessageT: MessageType, InputBarT: View>: View
                             switch message.kind {
                             case .text(let textItem):
                                 TextView(forItem: textItem)
-                            case .system(let strings):
-                                SystemView(messageText: strings)
+                            case .system(let string):
+                                SystemView(messageText: string)
                             case .image(let imageItem):
                                 ImageView(forItem: imageItem)
                             case .custom(let customItem):
