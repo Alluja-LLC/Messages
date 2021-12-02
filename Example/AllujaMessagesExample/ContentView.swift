@@ -57,9 +57,9 @@ struct ContentView: View {
                     .padding([.leading, .trailing])
                     .background(Color(uiColor: .systemGray6).edgesIgnoringSafeArea([.leading, .trailing, .bottom]))
                 })
-                    .messageDateFormatter(messageFormatter)
-                .refreshAction {
-                    print("REFRESH")
+                .messageDateFormatter(messageFormatter)
+                .refreshable {
+                    print("REF")
                 }
                 .navigationTitle("Messages Test")
             }

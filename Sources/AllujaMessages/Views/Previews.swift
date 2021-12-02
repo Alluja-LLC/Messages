@@ -8,12 +8,6 @@
 import Foundation
 import SwiftUI
 
-internal struct MessageGroup<MessageT: MessageType>: Identifiable {
-    let messages: [MessageT]
-
-    let id = UUID()
-}
-
 internal struct TextPreview: TextItem {
     let background: Color
     init(isClient: Bool) {

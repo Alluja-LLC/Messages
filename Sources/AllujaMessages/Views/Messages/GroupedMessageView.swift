@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-internal struct GroupedMessageView<MessageT: MessageType, InputBarT: View>: View {
-    let messageGroup: MessageGroup<MessageT>
-    let context: MessagesView<MessageT, InputBarT>.MessagesViewContext
+internal struct GroupedMessageView<MessageT: MessageType>: View {
+    let messageGroup: MessageGroupContainer<MessageT>
+    let context: MessagesViewContext<MessageT>
 
     var shouldCollapseProfilePicture: Bool {
         context.groupingOptions.contains(.collapseProfilePicture)
@@ -145,6 +145,6 @@ internal struct GroupedMessageView<MessageT: MessageType, InputBarT: View>: View
 
 private struct GroupedMessageView_Previews: PreviewProvider {
     static var previews: some View {
-        GroupedMessageView<MessagePreview, EmptyView>(messageGroup: MessageGroup<MessagePreview>(messages: []), context: .init())
+        GroupedMessageView<MessagePreview>(messageGroup: MessageGroupContainer<MessagePreview>(messages: []), context: .init())
     }
 }

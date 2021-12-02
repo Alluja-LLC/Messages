@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-internal struct MessageView<MessageT: MessageType, InputBarT: View>: View {
+internal struct MessageView<MessageT: MessageType>: View {
     @Environment(\.messageWidth) var width
     let message: MessageT
-    let context: MessagesView<MessageT, InputBarT>.MessagesViewContext
+    let context: MessagesViewContext<MessageT>
 
     var body: some View {
         HStack {
@@ -75,6 +75,6 @@ internal struct MessageView<MessageT: MessageType, InputBarT: View>: View {
 
 private struct MessageView_Previews: PreviewProvider {
     static var previews: some View {
-        MessageView<MessagePreview, EmptyView>(message: MessagePreview(), context: .init())
+        MessageView<MessagePreview>(message: MessagePreview(), context: MessagesViewContext<MessagePreview>())
     }
 }
