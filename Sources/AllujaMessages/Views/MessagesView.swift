@@ -43,7 +43,7 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
     }
 
     public var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             GeometryReader { geometry in
                 ScrollViewReader { value in
                     List {
@@ -66,12 +66,20 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                                             .padding([.top, .bottom], 2)
                                     }
                                     .id(message.id)
+                                    .if(message.id == manager.messageContainers.last!.id) {
+                                        // Temporary fix for ScrollView not scrolling to last message properly
+                                        $0.padding(.bottom, 50)
+                                    }
                                 }
                                 .onAppear {
-                                    value.scrollTo(manager.messageContainers.last?.id, anchor: .bottom)
+                                    withAnimation {
+                                        value.scrollTo(manager.messageContainers.last?.id)
+                                    }
                                 }
-                                .onChange(of: manager.messageContainers.count) { newCount in
-                                    value.scrollTo(manager.messageContainers.last?.id, anchor: .bottom)
+                                .onChange(of: manager.messageContainers.count) { _ in
+                                    withAnimation {
+                                        value.scrollTo(manager.messageContainers.last?.id)
+                                    }
                                 }
                             } else { // Otherwise use grouped message renderer
                                 ForEach($messageGroupContainers, id: \.id) { $messageGroup in
@@ -90,6 +98,10 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                                             .padding([.top, .bottom], 2)
                                     }
                                     .id(messageGroup.id)
+                                    .if(messageGroup.id == manager.messageGroupContainers.last!.id) {
+                                        // Temporary fix for ScrollView not scrolling to last message properly
+                                        $0.padding(.bottom, 50)
+                                    }
                                 }
                                 .onAppear {
                                     value.scrollTo(manager.groupedSortedMessages.last?.id, anchor: .center)

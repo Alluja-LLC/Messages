@@ -27,8 +27,6 @@ public protocol MessageType: Identifiable, Equatable {
 
     /// Custom footer for the message
     var customFooter: AnyView? { get }
-    
-    var timestampSize: CGSize { get set }
 }
 
 public enum SenderAlignment {

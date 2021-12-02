@@ -8,6 +8,12 @@
 import Foundation
 import SwiftUI
 
+internal struct MessageGroup<MessageT: MessageType>: Identifiable {
+    let messages: [MessageT]
+
+    let id = UUID()
+}
+
 internal struct TextPreview: TextItem {
     let background: Color
     init(isClient: Bool) {
@@ -34,8 +40,6 @@ internal struct ImagePreview: ImageItem {
 }
 
 internal struct MessagePreview: MessageType {
-    var timestampSize: CGSize = .zero
-    
     var sender: SenderPreview {
         SenderPreview()
     }
