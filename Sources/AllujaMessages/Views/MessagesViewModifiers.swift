@@ -8,12 +8,18 @@
 import Foundation
 import SwiftUI
 
-public enum MessageGroupingOption {
+public enum MessagePositionAnchor: Equatable {
+    case bottom, top
+}
+
+public enum MessageGroupingOption: Equatable {
     /// Hides profile picture for all but last message in chain from single sender
     case collapseProfilePicture
 
     /// Collapses message header and footer to use first header and last footer for message chain
     case collapseEnclosingViews
+    
+    case collapseTimestamps(MessagePositionAnchor)
 }
 
 internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
@@ -35,6 +41,10 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
 
         return nil
     }
+    
+    /// Custom header and footer options
+    @Published var customHeader: ((MessageT) -> AnyView)? = nil
+    @Published var customFooter: ((MessageT) -> AnyView)? = nil
 
     /// Configured grouping options
     @Published var groupingOptions: [MessageGroupingOption] = []
@@ -72,7 +82,7 @@ extension MessagesView {
     }
 
     /// Sets the `DateFormatter` to use for messages
-    public func messageDateFormatter(_ formatter: DateFormatter) -> MessagesView {
+    public func dateFormatter(_ formatter: DateFormatter) -> MessagesView {
         self.context.defaultDateFormatter = formatter
 
         return self
@@ -96,6 +106,22 @@ extension MessagesView {
     public func imageViewScale(_ scale: CGFloat) -> MessagesView {
         self.context.imageViewScale = scale
 
+        return self
+    }
+    
+    public func customHeader<HeaderView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> HeaderView) -> MessagesView {
+        self.context.customHeader = { message in
+            AnyView(builder(message))
+        }
+        
+        return self
+    }
+    
+    public func customFooter<FooterView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> FooterView) -> MessagesView {
+        self.context.customFooter = { message in
+            AnyView(builder(message))
+        }
+        
         return self
     }
 }

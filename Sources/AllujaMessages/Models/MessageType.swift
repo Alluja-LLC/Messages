@@ -21,12 +21,6 @@ public protocol MessageType: Identifiable, Equatable {
 
     /// The type of message
     var kind: MessageKind { get }
-
-    /// Custom header for the message
-    var customHeader: AnyView? { get }
-
-    /// Custom footer for the message
-    var customFooter: AnyView? { get }
 }
 
 public enum SenderAlignment {

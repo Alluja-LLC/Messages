@@ -31,12 +31,6 @@ struct Message: MessageType {
     
     let kind: MessageKind
     
-    let customHeader: AnyView? = nil
-    
-    var customFooter: AnyView? {
-        AnyView(Text(sender.displayName).font(.footnote).bold().foregroundColor(.gray))
-    }
-    
     static func == (lhs: Message, rhs: Message) -> Bool {
         lhs.id == rhs.id
     }

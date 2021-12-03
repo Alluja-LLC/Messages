@@ -8,8 +8,10 @@
 import SwiftUI
 
 internal struct GroupedMessageView<MessageT: MessageType>: View {
-    let messageGroup: MessageGroupContainer<MessageT>
+    @Environment(\.messageWidth) var width
+    @Binding var messageGroup: MessageGroupContainer<MessageT>
     let context: MessagesViewContext<MessageT>
+    let timestampOffset: CGFloat
 
     var shouldCollapseProfilePicture: Bool {
         context.groupingOptions.contains(.collapseProfilePicture)
@@ -38,37 +40,63 @@ internal struct GroupedMessageView<MessageT: MessageType>: View {
     }
 
     var messageBody: some View {
-        VStack {
+        VStack(spacing: 2) {
             // Collapsed header
-            if let header = messageGroup.messages.first!.customHeader, shouldCollapseEnclosing {
+            if let header = context.customHeader?(messageGroup.messages.first!), shouldCollapseEnclosing {
                 let firstMessagePosition = messageGroup.messages.first!.sender.position
 
-                AlignerView(alignment: firstMessagePosition) {
-                    HStack {
-                        if firstMessagePosition == .right {
-                            Spacer()
-                        }
+                HStack {
+                    if firstMessagePosition == .right {
+                        Spacer()
+                    }
 
-                        header
-                            .fixedSize()
+                    header
+                        .fixedSize()
 
-                        if firstMessagePosition == .left {
-                            Spacer()
-                        }
+                    if firstMessagePosition == .left {
+                        Spacer()
                     }
                 }
+                .padding([.leading, .trailing], 8)
             }
 
             ForEach(messageGroup.messages, id: \.id) { message in
-                HStack {
-                    // Don't collapse profile pictures
-                    if message.sender.position == .left && !shouldCollapseProfilePicture {
-                        ProfilePictureView(forSender: messageGroup.messages.last!.sender)
+                ZStack {
+                    if let _ = context.groupingOptions.first(where: { item in
+                        if case .collapseTimestamps(_) = item {
+                            return true
+                        }
+                        return false
+                    }) {
+                        EmptyView()
+                    } else {
+                        HStack {
+                            ChildSizeReader(size: $messageGroup.size) {
+                                Text(context.defaultDateFormatter.string(from: messageGroup.messages.first!.timestamp))
+                                    .foregroundColor(.secondary)
+                                    .font(.footnote)
+                                    .bold()
+                                    .fixedSize()
+                                    .padding([.top, .bottom, .trailing])
+                                    .offset(x: timestampOffset)
+                            }
+                            Spacer()
+                        }
+                        .padding(.leading, 8)
                     }
+                    
+                    HStack {
+                        if message.sender.position == .right {
+                            Spacer()
+                        }
+                        
+                        // Don't collapse profile pictures
+                        if message.sender.position == .left && !shouldCollapseProfilePicture {
+                            ProfilePictureView(forSender: messageGroup.messages.last!.sender)
+                        }
 
-                    AlignerView(alignment: message.sender.position) {
                         VStack {
-                            if let header = message.customHeader {
+                            if let header = context.customHeader?(message), !shouldCollapseEnclosing {
                                 HStack {
                                     if message.sender.position == .right {
                                         Spacer()
@@ -82,13 +110,16 @@ internal struct GroupedMessageView<MessageT: MessageType>: View {
                                 }
                             }
                             
+                            let messageAlignment: Alignment = message.sender.position == .left ? .leading : .trailing
                             switch message.kind {
                             case .text(let textItem):
                                 TextView(forItem: textItem)
+                                    .frame(width: width, alignment: messageAlignment)
                             case .system(let string):
                                 SystemView(messageText: string)
                             case .image(let imageItem):
                                 ImageView(forItem: imageItem)
+                                    .frame(width: width, alignment: messageAlignment)
                             case .custom(let customItem):
                                 if let renderer = context.customRenderer(forID: customItem.id) {
                                     renderer(message)
@@ -97,7 +128,7 @@ internal struct GroupedMessageView<MessageT: MessageType>: View {
                                 }
                             }
                             
-                            if let footer = message.customFooter {
+                            if let footer = context.customFooter?(message), !shouldCollapseEnclosing {
                                 HStack {
                                     if message.sender.position == .right {
                                         Spacer()
@@ -111,33 +142,35 @@ internal struct GroupedMessageView<MessageT: MessageType>: View {
                                 }
                             }
                         }
-                    }
 
-                    // Don't collapse profile pictures
-                    if message.sender.position == .right && !shouldCollapseProfilePicture {
-                        ProfilePictureView(forSender: messageGroup.messages.last!.sender)
+                        // Don't collapse profile pictures
+                        if message.sender.position == .right && !shouldCollapseProfilePicture {
+                            ProfilePictureView(forSender: messageGroup.messages.last!.sender)
+                        }
+                        
+                        if message.sender.position == .left {
+                            Spacer()
+                        }
                     }
                 }
             }
 
             // Collapsed footer
-            if let footer = messageGroup.messages.last!.customFooter, shouldCollapseEnclosing {
+            if let footer = context.customFooter?(messageGroup.messages.last!), shouldCollapseEnclosing {
                 let lastMessagePosition = messageGroup.messages.last!.sender.position
-
-                AlignerView(alignment: lastMessagePosition) {
-                    HStack {
-                        if lastMessagePosition == .right {
-                            Spacer()
-                        }
-
-                        footer
-                            .fixedSize()
-
-                        if lastMessagePosition == .left {
-                            Spacer()
-                        }
+                
+                HStack {
+                    if lastMessagePosition == .right {
+                        Spacer()
+                    }
+                    
+                    footer
+                    
+                    if lastMessagePosition == .left {
+                        Spacer()
                     }
                 }
+                .padding([.leading, .trailing], 8)
             }
         }
     }
@@ -145,6 +178,6 @@ internal struct GroupedMessageView<MessageT: MessageType>: View {
 
 private struct GroupedMessageView_Previews: PreviewProvider {
     static var previews: some View {
-        GroupedMessageView<MessagePreview>(messageGroup: MessageGroupContainer<MessagePreview>(messages: []), context: .init())
+        GroupedMessageView<MessagePreview>(messageGroup: .constant(MessageGroupContainer<MessagePreview>(messages: [])), context: .init(), timestampOffset: 0)
     }
 }

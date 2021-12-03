@@ -8,18 +8,23 @@
 import SwiftUI
 
 internal struct MessageView<MessageT: MessageType>: View {
-    @Environment(\.messageWidth) var width
-    let message: MessageT
+    @Environment(\.messageWidth) private var width
+    @Binding var messageContainer: MessageContainer<MessageT>
     let context: MessagesViewContext<MessageT>
+    let timestampOffset: CGFloat
+    
+    private var message: MessageT {
+        messageContainer.message
+    }
 
     var body: some View {
         HStack {
             if message.sender.position == .left {
                 ProfilePictureView(forSender: message.sender)
             }
-            
-            VStack(alignment: message.sender.position == .left ? .leading : .trailing, spacing: 2) {
-                if let header = message.customHeader {
+                
+            VStack(spacing: 2) {
+                if let header = context.customHeader?(message) {
                     HStack {
                         if message.sender.position == .right {
                             Spacer()
@@ -32,26 +37,52 @@ internal struct MessageView<MessageT: MessageType>: View {
                         }
                     }
                 }
-                
-                let messageAlignment: Alignment = message.sender.position == .left ? .leading : .trailing
-                switch message.kind {
-                case .text(let textItem):
-                    TextView(forItem: textItem)
-                        .frame(width: width, alignment: messageAlignment)
-                case .system(let string):
-                    SystemView(messageText: string)
-                case .image(let imageItem):
-                    ImageView(forItem: imageItem)
-                        .frame(width: width, alignment: messageAlignment)
-                case .custom(let customItem):
-                    if let renderer = context.customRenderer(forID: customItem.id) {
-                        renderer(message)
-                    } else {
-                        Text("No Renderer Found for ID \(customItem.id) :(")
+                    
+                ZStack {
+                    HStack {
+                        ChildSizeReader(size: $messageContainer.size) {
+                            Text(context.defaultDateFormatter.string(from: message.timestamp))
+                                .foregroundColor(.secondary)
+                                .font(.footnote)
+                                .bold()
+                                .fixedSize()
+                                .padding(.trailing)
+                                .offset(x: timestampOffset)
+                        }
+                        Spacer()
+                    }
+                    .padding(message.sender.position == .right ? [.leading] : [], 8)
+                    
+                    HStack {
+                        if message.sender.position == .right {
+                            Spacer()
+                        }
+                    
+                        let messageAlignment: Alignment = message.sender.position == .left ? .leading : .trailing
+                        switch message.kind {
+                        case .text(let textItem):
+                            TextView(forItem: textItem)
+                                .frame(width: width, alignment: messageAlignment)
+                        case .system(let string):
+                            SystemView(messageText: string)
+                        case .image(let imageItem):
+                            ImageView(forItem: imageItem)
+                                .frame(width: width, alignment: messageAlignment)
+                        case .custom(let customItem):
+                            if let renderer = context.customRenderer(forID: customItem.id) {
+                                renderer(message)
+                            } else {
+                                Text("No Renderer Found for ID \(customItem.id) :(")
+                            }
+                        }
+                        
+                        if message.sender.position == .left {
+                            Spacer()
+                        }
                     }
                 }
                 
-                if let footer = message.customFooter {
+                if let footer = context.customFooter?(message) {
                     HStack {
                         if message.sender.position == .right {
                             Spacer()
@@ -75,6 +106,6 @@ internal struct MessageView<MessageT: MessageType>: View {
 
 private struct MessageView_Previews: PreviewProvider {
     static var previews: some View {
-        MessageView<MessagePreview>(message: MessagePreview(), context: MessagesViewContext<MessagePreview>())
+        MessageView<MessagePreview>(messageContainer: .constant(MessageContainer<MessagePreview>(message: MessagePreview())), context: MessagesViewContext<MessagePreview>(), timestampOffset: 0)
     }
 }

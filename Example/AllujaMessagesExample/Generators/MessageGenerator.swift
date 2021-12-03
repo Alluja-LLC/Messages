@@ -42,7 +42,7 @@ struct MessageGenerator {
         var messages: [Message] = []
         for _ in 0..<quantity {
             let chunk = randomLoremChunk(ofSize: Int.random(in: 5...15))
-            messages.append(.init(kind: .text(TextMessage(text: AttributedString(chunk, attributes: AttributeContainer([.foregroundColor: author.position == .left ? UIColor.black : UIColor.white])), isClient: author.position == .right)), sender: author))
+            messages.append(.init(kind: .text(TextMessage(text: AttributedString(chunk, attributes: AttributeContainer([.foregroundColor: author.position == .left ? UIColor.label : UIColor.white])), isClient: author.position == .right)), sender: author))
         }
         return messages
     }
