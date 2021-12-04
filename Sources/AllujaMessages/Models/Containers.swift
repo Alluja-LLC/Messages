@@ -16,10 +16,12 @@ internal struct MessageContainer<MessageT: MessageType> {
     var size: CGSize = .zero
 }
 
-internal struct MessageGroupContainer<MessageT: MessageType>: Identifiable {
+internal struct MessageGroupContainer<MessageT: MessageType> {
     let messages: [MessageT]
 
-    let id = UUID()
+    var id: String {
+        messages.first!.id
+    }
     
     var size: CGSize = .zero
 }

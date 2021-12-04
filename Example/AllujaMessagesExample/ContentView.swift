@@ -70,9 +70,19 @@ struct ContentView: View {
             })
                 .groupingOptions(groupingOptions)
             .dateFormatter(messageFormatter)
+            .messageContextMenu { message in
+                Text("\(message.id)")
+                Text("Menu")
+            }
+            .customHeader { message in
+                Text(message.id)
+                    .font(.footnote)
+                    .bold()
+                    .foregroundColor(.gray)
+            }
             .customFooter { message in
                 if footerContentChange {
-                    Text("FOOTER CHANGE")
+                    EmptyView()
                 } else {
                     Text(message.sender.displayName)
                         .font(.footnote)

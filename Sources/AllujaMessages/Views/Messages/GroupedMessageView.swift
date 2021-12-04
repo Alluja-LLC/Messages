@@ -61,98 +61,111 @@ internal struct GroupedMessageView<MessageT: MessageType>: View {
             }
 
             ForEach(messageGroup.messages, id: \.id) { message in
-                ZStack {
-                    if let _ = context.groupingOptions.first(where: { item in
-                        if case .collapseTimestamps(_) = item {
-                            return true
-                        }
-                        return false
-                    }) {
-                        EmptyView()
-                    } else {
-                        HStack {
-                            ChildSizeReader(size: $messageGroup.size) {
-                                Text(context.defaultDateFormatter.string(from: messageGroup.messages.first!.timestamp))
-                                    .foregroundColor(.secondary)
-                                    .font(.footnote)
-                                    .bold()
-                                    .fixedSize()
-                                    .padding([.top, .bottom, .trailing])
-                                    .offset(x: timestampOffset)
+                Menu(content: { context.messageContextMenu!(message) }, label: {
+                    ZStack {
+                        if let _ = context.groupingOptions.first(where: { item in
+                            if case .collapseTimestamps(_) = item {
+                                return true
                             }
-                            Spacer()
+                            return false
+                        }) {
+                            EmptyView()
+                        } else {
+                            HStack {
+                                ChildSizeReader(size: $messageGroup.size) {
+                                    Text(context.defaultDateFormatter.string(from: messageGroup.messages.first!.timestamp))
+                                        .foregroundColor(.secondary)
+                                        .font(.footnote)
+                                        .bold()
+                                        .fixedSize()
+                                        .padding([.trailing])
+                                        .offset(x: timestampOffset)
+                                }
+                                Spacer()
+                            }
+                            .padding(.leading, 8)
                         }
-                        .padding(.leading, 8)
+                        
+                        HStack {
+                            if message.sender.position == .right {
+                                Spacer()
+                            }
+                            
+                            // Don't collapse profile pictures
+                            if message.sender.position == .left && !shouldCollapseProfilePicture {
+                                ProfilePictureView(forSender: messageGroup.messages.last!.sender)
+                            }
+
+                            VStack {
+                                if let header = context.customHeader?(message), !shouldCollapseEnclosing {
+                                    HStack {
+                                        if message.sender.position == .right {
+                                            Spacer()
+                                        }
+                                        
+                                        header
+                                        
+                                        if message.sender.position == .left {
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                                
+                                HStack {
+                                    if message.sender.position == .right {
+                                        Spacer()
+                                    }
+                                    
+                                let messageAlignment: Alignment = message.sender.position == .left ? .leading : .trailing
+                                switch message.kind {
+                                case .text(let textItem):
+                                    TextView(forItem: textItem)
+                                        .frame(width: width, alignment: messageAlignment)
+                                case .system(let string):
+                                    SystemView(messageText: string)
+                                case .image(let imageItem):
+                                    ImageView(forItem: imageItem)
+                                        .frame(width: width, alignment: messageAlignment)
+                                case .custom(let customItem):
+                                    if let renderer = context.customRenderer(forID: customItem.id) {
+                                        renderer(message)
+                                    } else {
+                                        Text("No Renderer Found for ID \(customItem.id) :(")
+                                    }
+                                }
+                                    
+                                    if message.sender.position == .left {
+                                        Spacer()
+                                    }
+                                }
+                                
+                                if let footer = context.customFooter?(message), !shouldCollapseEnclosing {
+                                    HStack {
+                                        if message.sender.position == .right {
+                                            Spacer()
+                                        }
+                                        
+                                        footer
+                                        
+                                        if message.sender.position == .left {
+                                            Spacer()
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Don't collapse profile pictures
+                            if message.sender.position == .right && !shouldCollapseProfilePicture {
+                                ProfilePictureView(forSender: messageGroup.messages.last!.sender)
+                            }
+                            
+                            if message.sender.position == .left {
+                                Spacer()
+                            }
+                        }
                     }
                     
-                    HStack {
-                        if message.sender.position == .right {
-                            Spacer()
-                        }
-                        
-                        // Don't collapse profile pictures
-                        if message.sender.position == .left && !shouldCollapseProfilePicture {
-                            ProfilePictureView(forSender: messageGroup.messages.last!.sender)
-                        }
-
-                        VStack {
-                            if let header = context.customHeader?(message), !shouldCollapseEnclosing {
-                                HStack {
-                                    if message.sender.position == .right {
-                                        Spacer()
-                                    }
-                                    
-                                    header
-                                    
-                                    if message.sender.position == .left {
-                                        Spacer()
-                                    }
-                                }
-                            }
-                            
-                            let messageAlignment: Alignment = message.sender.position == .left ? .leading : .trailing
-                            switch message.kind {
-                            case .text(let textItem):
-                                TextView(forItem: textItem)
-                                    .frame(width: width, alignment: messageAlignment)
-                            case .system(let string):
-                                SystemView(messageText: string)
-                            case .image(let imageItem):
-                                ImageView(forItem: imageItem)
-                                    .frame(width: width, alignment: messageAlignment)
-                            case .custom(let customItem):
-                                if let renderer = context.customRenderer(forID: customItem.id) {
-                                    renderer(message)
-                                } else {
-                                    Text("No Renderer Found for ID \(customItem.id) :(")
-                                }
-                            }
-                            
-                            if let footer = context.customFooter?(message), !shouldCollapseEnclosing {
-                                HStack {
-                                    if message.sender.position == .right {
-                                        Spacer()
-                                    }
-                                    
-                                    footer
-                                    
-                                    if message.sender.position == .left {
-                                        Spacer()
-                                    }
-                                }
-                            }
-                        }
-
-                        // Don't collapse profile pictures
-                        if message.sender.position == .right && !shouldCollapseProfilePicture {
-                            ProfilePictureView(forSender: messageGroup.messages.last!.sender)
-                        }
-                        
-                        if message.sender.position == .left {
-                            Spacer()
-                        }
-                    }
-                }
+                })
             }
 
             // Collapsed footer

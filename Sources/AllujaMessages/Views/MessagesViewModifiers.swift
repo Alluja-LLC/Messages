@@ -62,6 +62,9 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
 
     /// Determines the scale to use for the `ImageView`
     @Published var imageViewScale: CGFloat = 1.0
+    
+    /// Context menu for each message
+    @Published var messageContextMenu: ((MessageT) -> AnyView)? = nil
 }
 
 extension MessagesView {
@@ -119,6 +122,14 @@ extension MessagesView {
     
     public func customFooter<FooterView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> FooterView) -> MessagesView {
         self.context.customFooter = { message in
+            AnyView(builder(message))
+        }
+        
+        return self
+    }
+    
+    public func messageContextMenu<MenuItems: View>(@ViewBuilder _ builder: @escaping (MessageT) -> MenuItems) -> MessagesView {
+        self.context.messageContextMenu = { message in
             AnyView(builder(message))
         }
         

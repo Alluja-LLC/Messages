@@ -47,28 +47,21 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                             // If no grouping options enabled, just render normally
                             if context.groupingOptions.isEmpty {
                                 ForEach($manager.messageContainers, id: \.id) { $message in
-                                    MessageView(messageContainer: $message, context: context, timestampOffset: geometry.size.width)
-                                        .padding([.top, .bottom], 2)
-                                    .contentShape(Rectangle())
-                                    .id(message.id)
-                                    .if(message.id == manager.messageContainers.last!.id) {
-                                        // Temporary fix for ScrollView not scrolling to last message properly
-                                        $0.padding(.bottom, 50)
-                                    }
-                                }
-                                .onAppear {
-                                    withAnimation {
-                                        value.scrollTo(manager.messageContainers.last?.id)
-                                    }
-                                }
-                                .onChange(of: manager.messageContainers.count) { _ in
-                                    withAnimation {
-                                        value.scrollTo(manager.messageContainers.last?.id)
-                                    }
+                                    Menu(content: { context.messageContextMenu!(message.message) }, label: {
+                                        MessageView(messageContainer: $message, context: context, timestampOffset: geometry.size.width)
+                                            .padding([.top, .bottom], 2)
+                                        .contentShape(Rectangle())
+                                        .id(message.id)
+                                        .if(message.id == manager.messageContainers.last!.id) {
+                                            // Temporary fix for ScrollView not scrolling to last message properly
+                                            $0.padding(.bottom, 50)
+                                        }
+                                    })
                                 }
                             } else { // Otherwise use grouped message renderer
                                 ForEach($manager.messageGroupContainers, id: \.id) { $messageGroup in
                                     ZStack {
+                                        // Controls how timestamps are rendered
                                         if let anchor = context.groupingOptions.first(where: { item in
                                             if case .collapseTimestamps(_) = item {
                                                 return true
@@ -81,17 +74,25 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                                                         if case .collapseTimestamps(let position) = anchor, case .bottom = position {
                                                             Spacer()
                                                                 .padding(.top)
+                                                            
+                                                            Text(context.defaultDateFormatter.string(from: messageGroup.messages.last!.timestamp))
+                                                                .foregroundColor(.secondary)
+                                                                .font(.footnote)
+                                                                .bold()
+                                                                .fixedSize()
+                                                                .padding([.top, .bottom, .trailing])
+                                                                .offset(x: geometry.size.width)
                                                         }
                                                         
-                                                        Text(context.defaultDateFormatter.string(from: messageGroup.messages.first!.timestamp))
-                                                            .foregroundColor(.secondary)
-                                                            .font(.footnote)
-                                                            .bold()
-                                                            .fixedSize()
-                                                            .padding([.top, .bottom, .trailing])
-                                                            .offset(x: geometry.size.width)
-                                                        
                                                         if case .collapseTimestamps(let position) = anchor, case .top = position {
+                                                            Text(context.defaultDateFormatter.string(from: messageGroup.messages.first!.timestamp))
+                                                                .foregroundColor(.secondary)
+                                                                .font(.footnote)
+                                                                .bold()
+                                                                .fixedSize()
+                                                                .padding([.top, .bottom, .trailing])
+                                                                .offset(x: geometry.size.width)
+                                                            
                                                             Spacer()
                                                         }
                                                     }
@@ -104,21 +105,32 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                                         GroupedMessageView(messageGroup: $messageGroup, context: context, timestampOffset: geometry.size.width)
                                             .padding([.top, .bottom], 2)
                                     }
+                                    
+                                    EmptyView()
                                     .id(messageGroup.id)
                                     .if(messageGroup.id == manager.messageGroupContainers.last!.id) {
                                         // Temporary fix for ScrollView not scrolling to last message properly
                                         $0.padding(.bottom, 50)
                                     }
                                 }
-                                .onAppear {
-                                    withAnimation {
-                                        value.scrollTo(manager.messageGroupContainers.last?.id, anchor: .center)
-                                    }
+                                
+                            }
+                        }
+                        .onAppear {
+                            withAnimation {
+                                if context.groupingOptions.isEmpty {
+                                    value.scrollTo(manager.messageContainers.last?.id)
+                                } else {
+                                    value.scrollTo(manager.messageGroupContainers.last?.id)
                                 }
-                                .onChange(of: manager.messageContainers.count) { _ in
-                                    withAnimation {
-                                        value.scrollTo(manager.messageGroupContainers.last?.id, anchor: .center)
-                                    }
+                            }
+                        }
+                        .onChange(of: manager.messageContainers.count) { _ in
+                            withAnimation {
+                                if context.groupingOptions.isEmpty {
+                                    value.scrollTo(manager.messageContainers.last?.id)
+                                } else {
+                                    value.scrollTo(manager.messageGroupContainers.last?.id)
                                 }
                             }
                         }
@@ -161,12 +173,10 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
 
 fileprivate class MessagesViewManager<MessageT: MessageType>: ObservableObject {
     init(messages: [MessageContainer<MessageT>], context: MessagesViewContext<MessageT>) {
-        messageContainers = messages.sorted(by: { $0.message.timestamp < $1.message.timestamp })
-        
         // Iterate over each message and see if the next one is last
         var completeGroups: [MessageGroupContainer<MessageT>] = []
         var currentGroup: [MessageT] = []
-        for message in messages {
+        for message in messages.sorted(by: { $0.message.timestamp < $1.message.timestamp }) {
             currentGroup.append(message.message)
             if context.messageEndsGroup(message.message) {
                 completeGroups.append(.init(messages: currentGroup))
@@ -180,12 +190,12 @@ fileprivate class MessagesViewManager<MessageT: MessageType>: ObservableObject {
         }
         messageGroupContainers = completeGroups
         
-        self.context = context
+        messageContainers = messages.sorted(by: { $0.message.timestamp < $1.message.timestamp })
     }
     
     @Published var messageContainers: [MessageContainer<MessageT>]
-    @Published var messageGroupContainers: [MessageGroupContainer<MessageT>]
-    let context: MessagesViewContext<MessageT>
+    // No need to Publish since messageContainers is always updated when this is
+    var messageGroupContainers: [MessageGroupContainer<MessageT>]
     
     var maxTimestampViewWidth: CGFloat {
         messageContainers.reduce(CGFloat.zero, { res, message in
