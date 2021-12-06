@@ -65,6 +65,9 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     
     /// Context menu for each message
     @Published var messageContextMenu: ((MessageT) -> AnyView)? = nil
+    
+    /// Custom profile picture
+    @Published var customProfile: ((MessageT) -> AnyView)? = nil
 }
 
 extension MessagesView {
@@ -130,6 +133,14 @@ extension MessagesView {
     
     public func messageContextMenu<MenuItems: View>(@ViewBuilder _ builder: @escaping (MessageT) -> MenuItems) -> MessagesView {
         self.context.messageContextMenu = { message in
+            AnyView(builder(message))
+        }
+        
+        return self
+    }
+    
+    public func customProfile<ProfileView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> ProfileView) -> MessagesView {
+        self.context.customProfile = { message in
             AnyView(builder(message))
         }
         

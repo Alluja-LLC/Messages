@@ -45,14 +45,6 @@ struct Sender: SenderType {
     
     let displayName: String = "Some Sender"
     
-    let profileImageData: Data? = nil
-    
-    let profileImageURL: URL? = nil
-    
-    func placeholder(forPhase phase: AsyncImagePhase) -> AnyView? {
-        nil
-    }
-    
     var position: SenderAlignment
     
     

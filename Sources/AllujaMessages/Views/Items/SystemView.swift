@@ -11,9 +11,15 @@ struct SystemView: View {
     let messageText: AttributedString
 
     var body: some View {
-        Text(messageText)
-            .lineLimit(nil)
-            .padding([.leading, .trailing])
+        HStack {
+            Spacer()
+            Text(messageText)
+                .font(.footnote)
+                .foregroundColor(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding([.leading, .trailing])
+            Spacer()
+        }
     }
 }
 

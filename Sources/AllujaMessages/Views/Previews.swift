@@ -74,14 +74,6 @@ internal struct SenderPreview: SenderType {
         "Test Name"
     }
 
-    var profileImageData: Data? {
-        nil
-    }
-
-    var profileImageURL: URL? {
-        nil
-    }
-
     var id: String {
         "Test"
     }

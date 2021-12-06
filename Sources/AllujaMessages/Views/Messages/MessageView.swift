@@ -16,24 +16,37 @@ internal struct MessageView<MessageT: MessageType>: View {
     private var message: MessageT {
         messageContainer.message
     }
+    
+    private var messageShouldBeSpaced: Bool {
+        if case .text = message.kind {
+            return true
+        } else if case .image = message.kind {
+            return true
+        }
+        return false
+    }
 
     var body: some View {
         HStack {
-            if message.sender.position == .left {
-                ProfilePictureView(forSender: message.sender)
+            if let profile = context.customProfile?(message), message.sender.position == .left {
+                profile
             }
                 
             VStack(spacing: 2) {
                 if let header = context.customHeader?(message) {
-                    HStack {
-                        if message.sender.position == .right {
-                            Spacer()
-                        }
-                        
-                        header
-                        
-                        if message.sender.position == .left {
-                            Spacer()
+                    if case .system(_) = message.kind {
+                        EmptyView()
+                    } else {
+                        HStack {
+                            if message.sender.position == .right {
+                                Spacer()
+                            }
+                            
+                            header
+                            
+                            if message.sender.position == .left {
+                                Spacer()
+                            }
                         }
                     }
                 }
@@ -51,10 +64,9 @@ internal struct MessageView<MessageT: MessageType>: View {
                         }
                         Spacer()
                     }
-                    .padding(message.sender.position == .right ? [.leading] : [], 8)
                     
                     HStack {
-                        if message.sender.position == .right {
+                        if message.sender.position == .right && messageShouldBeSpaced {
                             Spacer()
                         }
                     
@@ -76,29 +88,33 @@ internal struct MessageView<MessageT: MessageType>: View {
                             }
                         }
                         
-                        if message.sender.position == .left {
+                        if message.sender.position == .left && messageShouldBeSpaced {
                             Spacer()
                         }
                     }
                 }
                 
                 if let footer = context.customFooter?(message) {
-                    HStack {
-                        if message.sender.position == .right {
-                            Spacer()
-                        }
-                        
-                        footer
-                        
-                        if message.sender.position == .left {
-                            Spacer()
+                    if case .system(_) = message.kind {
+                        EmptyView()
+                    } else {
+                        HStack {
+                            if message.sender.position == .right {
+                                Spacer()
+                            }
+                            
+                            footer
+                            
+                            if message.sender.position == .left {
+                                Spacer()
+                            }
                         }
                     }
                 }
             }
             
-            if message.sender.position == .right {
-                ProfilePictureView(forSender: message.sender)
+            if let profile = context.customProfile?(message), message.sender.position == .right {
+                profile
             }
         }
     }

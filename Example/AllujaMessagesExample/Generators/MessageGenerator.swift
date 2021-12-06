@@ -41,8 +41,12 @@ struct MessageGenerator {
     static func generateMessages(fromAuthor author: Sender, quantity: Int) -> [Message] {
         var messages: [Message] = []
         for _ in 0..<quantity {
-            let chunk = randomLoremChunk(ofSize: Int.random(in: 5...15))
-            messages.append(.init(kind: .text(TextMessage(text: AttributedString(chunk, attributes: AttributeContainer([.foregroundColor: author.position == .left ? UIColor.label : UIColor.white])), isClient: author.position == .right)), sender: author))
+            if Int.random(in: 0...2) == 0 {
+                messages.append(.init(kind: .system(AttributedString("System Message")), sender: author))
+            } else {
+                let chunk = randomLoremChunk(ofSize: Int.random(in: 5...15))
+                messages.append(.init(kind: .text(TextMessage(text: AttributedString(chunk, attributes: AttributeContainer([.foregroundColor: author.position == .left ? UIColor.label : UIColor.white])), isClient: author.position == .right)), sender: author))
+            }
         }
         return messages
     }

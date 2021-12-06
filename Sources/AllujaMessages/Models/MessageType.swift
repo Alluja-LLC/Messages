@@ -34,15 +34,6 @@ public protocol SenderType: Identifiable {
     /// Display name for each sender
     var displayName: String { get }
 
-    /// Profile image data for each sender, takes priority over URL
-    var profileImageData: Data? { get }
-
-    /// Profile image URL for each sender
-    var profileImageURL: URL? { get }
-
-    /// A placeholder while the image is loading
-    func placeholder(forPhase phase: AsyncImagePhase) -> AnyView?
-
     /// Determines which side the message is placed on
     var position: SenderAlignment { get }
 }
