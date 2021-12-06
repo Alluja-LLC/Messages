@@ -23,7 +23,96 @@ public enum MessageGroupingOption: Equatable {
 }
 
 internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
-    init() {}
+    init(messages: [MessageT]) {
+        updateMessages(messages)
+    }
+    
+    @Published var messages: [MessageContainer<MessageT>] = []
+
+    var maxTimestampViewWidth: CGFloat {
+        messages.reduce(CGFloat.zero, { res, message in
+            max(res, message.size.width)
+        })
+    }
+    
+    func updateMessages(_ messages: [MessageT]) {
+        // Iterate over each message and see if the next one is last
+        var completeContainers: [MessageContainer<MessageT>] = []
+        for (i, message) in messages.sorted(by: { $0.timestamp < $1.timestamp }).enumerated() {
+            // Figure out what options are needed for each message
+            var flags: [MessageGroupFlag] = []
+            var timestampFlag: MessageGroupTimestampFlag = .hidden
+            
+            // If this is the first message OR the last message ends the group then add flag
+            if completeContainers.isEmpty || completeContainers[completeContainers.index(before: i)].groupFlags.contains(.endGroup) {
+                if case .collapseTimestamps(let anchor) = groupingOptions.first(where: { item in
+                    if case .collapseTimestamps(_) = item {
+                        return true
+                    }
+                    return false
+                }), anchor == .top {
+                    timestampFlag = .top
+                }
+                
+                flags.append(.startGroup)
+            }
+            
+            if messageEndsGroup(message) {
+                if case .collapseTimestamps(let anchor) = groupingOptions.first(where: { item in
+                    if case .collapseTimestamps(_) = item {
+                        return true
+                    }
+                    return false
+                }), anchor == .bottom {
+                    timestampFlag = .bottom
+                }
+                
+                flags.append(.endGroup)
+            }
+            
+            // If there aren't any timestamp grouping options, then display timestamp normally
+            if case .collapseTimestamps(_) = groupingOptions.first(where: { item in
+                if case .collapseTimestamps(_) = item {
+                    return true
+                }
+                return false
+            }) {
+                
+            } else {
+                timestampFlag = .normal
+            }
+            
+            switch message.kind {
+            case .system(_):
+                break
+            default:
+                if groupingOptions.contains(.collapseEnclosingViews) {
+                    if flags.contains(.startGroup) {
+                        flags.append(.renderHeader)
+                    }
+                    
+                    if flags.contains(.endGroup) {
+                        flags.append(.renderFooter)
+                    }
+                } else {
+                    flags.append(contentsOf: [.renderHeader, .renderFooter])
+                }
+                
+                if groupingOptions.contains(.collapseProfilePicture) {
+                    if flags.contains(.endGroup) {
+                        flags.append(.renderProfile)
+                    } else {
+                        flags.append(.renderClearProfile)
+                    }
+                } else {
+                    flags.append(.renderProfile)
+                }
+            }
+            completeContainers.append(.init(message: message, groupFlags: flags, timestampFlag: timestampFlag))
+        }
+        
+        self.messages = completeContainers
+    }
 
     struct CustomRendererConfiguration: Identifiable {
         let id: String
@@ -47,7 +136,11 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     @Published var customFooter: ((MessageT) -> AnyView)? = nil
 
     /// Configured grouping options
-    @Published var groupingOptions: [MessageGroupingOption] = []
+    @Published var groupingOptions: [MessageGroupingOption] = [] {
+        didSet {
+            updateMessages(messages.map{ $0.message })
+        }
+    }
 
     /// `DateFormatter` to use for messages
     @Published var defaultDateFormatter: DateFormatter = DateFormatter()

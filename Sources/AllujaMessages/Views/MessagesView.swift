@@ -12,7 +12,6 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
     @Environment(\.refresh) var refresh
     
     // Allows for Messages to keep track of timestamp view size and resize gestures accordingly
-    @State private var messages: [MessageContainer<MessageT>]
     private let inputBar: () -> InputBarT
     
     @FocusState private var focusInput: Bool
@@ -23,7 +22,7 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
     public init(withMessages messages: [MessageT], @ViewBuilder withInputBar inputBar: @escaping () -> InputBarT) {
         self.inputBar = inputBar
 
-        let context = MessagesViewContext<MessageT>()
+        let context = MessagesViewContext<MessageT>(messages: messages)
         context.messageEndsGroup = { message in
             let index = messages.firstIndex(of: message)!
             if index == messages.count - 1 {
@@ -35,53 +34,6 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
         }
         
         self.context = context
-        
-        // Iterate over each message and see if the next one is last
-        var completeContainers: [MessageContainer<MessageT>] = []
-        for (i, message) in messages.sorted(by: { $0.timestamp < $1.timestamp }).enumerated() {
-            // Figure out what options are needed for each message
-            var flags: [MessageGroupFlags] = []
-            // If this is the first message OR the last message ends the group then add flag
-            if completeContainers.isEmpty || completeContainers[completeContainers.index(before: i)].groupFlags.contains(.endGroup) {
-                flags.append(.startGroup)
-            }
-            if context.messageEndsGroup(message) {
-                flags.append(.endGroup)
-            }
-            if case .system(_) = message.kind {
-                
-            } else {
-                if context.groupingOptions.contains(.collapseEnclosingViews) {
-                    if flags.contains(.startGroup) {
-                        flags.append(.renderHeader)
-                    }
-                    
-                    if flags.contains(.endGroup) {
-                        flags.append(.renderFooter)
-                    }
-                } else {
-                    flags.append(contentsOf: [.renderHeader, .renderFooter])
-                }
-                
-                if context.groupingOptions.contains(.collapseProfilePicture) {
-                    if flags.contains(.endGroup) {
-                        flags.append(.renderProfile)
-                    } else {
-                        flags.append(.renderClearProfile)
-                    }
-                } else {
-                    flags.append(.renderProfile)
-                }
-            }
-            completeContainers.append(.init(message: message, groupFlags: flags))
-        }
-        self._messages = State(initialValue: completeContainers)
-    }
-    
-    private var maxTimestampViewWidth: CGFloat {
-        messages.reduce(CGFloat.zero, { res, message in
-            max(res, message.size.width)
-        })
     }
 
     public var body: some View {
@@ -90,31 +42,31 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                 ScrollViewReader { value in
                     List {
                         Group {
-                            ForEach($messages, id: \.id) { $message in
-                                MessageView(messageContainer: $message, context: context, timestampOffset: geometry.size.width)
+                            ForEach($context.messages, id: \.id) { $message in
+                                MessageView(container: $message, context: context, timestampOffset: geometry.size.width)
                                     .padding([.top, .bottom], 2)
-                                .contentShape(Rectangle())
-                                .id(message.id)
-                                .if(message.id == messages.last!.id) {
-                                    // Temporary fix for ScrollView not scrolling to last message properly
-                                    $0.padding(.bottom, 50)
-                                }
-                                .if(context.messageContextMenu != nil) {
-                                    $0.contextMenu {
-                                        context.messageContextMenu!(message.message)
+                                    .contentShape(Rectangle())
+                                    .id(message.id)
+                                    .if(message.id == context.messages.last!.id) {
+                                        // Temporary fix for ScrollView not scrolling to last message properly
+                                        $0.padding(.bottom, 50)
                                     }
-                                }
+                                    .if(context.messageContextMenu != nil) {
+                                        $0.contextMenu {
+                                            context.messageContextMenu!(message.message)
+                                        }
+                                    }
                             }
                         }
                         .padding([.leading, .trailing], 8)
                         .onAppear {
                             withAnimation {
-                                value.scrollTo(messages.last?.id)
+                                value.scrollTo(context.messages.last?.id)
                             }
                         }
-                        .onChange(of: messages.count) { _ in
+                        .onChange(of: context.messages.count) { _ in
                             withAnimation {
-                                value.scrollTo(messages.last?.id)
+                                value.scrollTo(context.messages.last?.id)
                             }
                         }
                         .listRowInsets(EdgeInsets())
@@ -124,7 +76,7 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                         .gesture(
                             DragGesture(minimumDistance: 25.0)
                                 .onChanged { value in
-                                    dragOffset = max(min(value.translation.width, 0), -maxTimestampViewWidth)
+                                    dragOffset = max(min(value.translation.width, 0), -context.maxTimestampViewWidth)
                                 }
                                 .onEnded { _ in
                                     dragOffset = .zero

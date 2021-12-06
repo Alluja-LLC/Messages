@@ -8,13 +8,14 @@
 import SwiftUI
 
 internal struct MessageView<MessageT: MessageType>: View {
+    
     @Environment(\.messageWidth) private var width
-    @Binding var messageContainer: MessageContainer<MessageT>
+    @Binding var container: MessageContainer<MessageT>
     let context: MessagesViewContext<MessageT>
     let timestampOffset: CGFloat
     
     private var message: MessageT {
-        messageContainer.message
+        container.message
     }
     
     private var messageShouldBeSpaced: Bool {
@@ -25,6 +26,20 @@ internal struct MessageView<MessageT: MessageType>: View {
         }
         return false
     }
+    
+    private var groupPaddingEdges: Edge.Set {
+        if context.groupingOptions.isEmpty {
+            return []
+        }
+        var set = Edge.Set()
+        if container.groupFlags.contains(.startGroup) {
+            set.insert(.top)
+        }
+        if container.groupFlags.contains(.endGroup) {
+            set.insert(.bottom)
+        }
+        return set
+    }
 
     var body: some View {
         HStack {
@@ -33,7 +48,7 @@ internal struct MessageView<MessageT: MessageType>: View {
             }
                 
             VStack(spacing: 2) {
-                if let header = context.customHeader?(message) {
+                if let header = context.customHeader?(message), container.groupFlagsEmptyOrContains(.renderHeader) {
                     if case .system(_) = message.kind {
                         EmptyView()
                     } else {
@@ -52,17 +67,29 @@ internal struct MessageView<MessageT: MessageType>: View {
                 }
                     
                 ZStack {
-                    HStack {
-                        ChildSizeReader(size: $messageContainer.size) {
-                            Text(context.defaultDateFormatter.string(from: message.timestamp))
-                                .foregroundColor(.secondary)
-                                .font(.footnote)
-                                .bold()
-                                .fixedSize()
-                                .padding(.trailing)
-                                .offset(x: timestampOffset)
+                    if container.timestampFlag != .hidden {
+                        HStack {
+                            ChildSizeReader(size: $container.size) {
+                                VStack {
+                                    if container.timestampFlag == .bottom {
+                                        Spacer()
+                                    }
+                                    
+                                    Text(context.defaultDateFormatter.string(from: message.timestamp))
+                                        .foregroundColor(.secondary)
+                                        .font(.footnote)
+                                        .bold()
+                                        .fixedSize()
+                                        .padding(.trailing)
+                                        .offset(x: timestampOffset)
+                                    
+                                    if container.timestampFlag == .top {
+                                        Spacer()
+                                    }
+                                }
+                            }
+                            Spacer()
                         }
-                        Spacer()
                     }
                     
                     HStack {
@@ -94,7 +121,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                     }
                 }
                 
-                if let footer = context.customFooter?(message) {
+                if let footer = context.customFooter?(message), container.groupFlagsEmptyOrContains(.renderFooter) {
                     if case .system(_) = message.kind {
                         EmptyView()
                     } else {
@@ -112,6 +139,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                     }
                 }
             }
+            .padding(groupPaddingEdges)
             
             if let profile = context.customProfile?(message), message.sender.position == .right {
                 profile
@@ -122,6 +150,6 @@ internal struct MessageView<MessageT: MessageType>: View {
 
 private struct MessageView_Previews: PreviewProvider {
     static var previews: some View {
-        MessageView<MessagePreview>(messageContainer: .constant(MessageContainer<MessagePreview>(message: MessagePreview())), context: MessagesViewContext<MessagePreview>(), timestampOffset: 0)
+        MessageView<MessagePreview>(container: .constant(MessageContainer<MessagePreview>(message: MessagePreview())), context: MessagesViewContext<MessagePreview>(messages: []), timestampOffset: 0)
     }
 }

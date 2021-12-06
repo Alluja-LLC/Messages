@@ -46,6 +46,4 @@ struct Sender: SenderType {
     let displayName: String = "Some Sender"
     
     var position: SenderAlignment
-    
-    
 }

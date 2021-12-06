@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-internal enum MessageGroupFlags {
+internal enum MessageGroupFlag {
     /// Instructs view to render header
     case renderHeader
     
@@ -28,19 +28,24 @@ internal enum MessageGroupFlags {
     case endGroup
 }
 
-internal enum MessageGroupTimestampFlags {
+internal enum MessageGroupTimestampFlag {
     case normal
     case top
     case bottom
+    case hidden
 }
 
 internal struct MessageContainer<MessageT: MessageType> {
     let message: MessageT
-    var groupFlags: [MessageGroupFlags] = []
-    var timestampFlags: [MessageGroupTimestampFlags] = []
+    var groupFlags: [MessageGroupFlag] = []
+    var timestampFlag: MessageGroupTimestampFlag = .normal
 
     var id: String {
         message.id
+    }
+    
+    func groupFlagsEmptyOrContains(_ flag: MessageGroupFlag) -> Bool {
+        groupFlags.isEmpty || groupFlags.contains(flag)
     }
     
     var size: CGSize = .zero
