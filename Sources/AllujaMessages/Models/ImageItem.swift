@@ -14,7 +14,4 @@ public protocol ImageItem {
 
     /// The URL of the resource
     var imageURL: URL? { get }
-
-    /// A placeholder while the image is loading
-    func placeholder(forPhase phase: AsyncImagePhase) -> AnyView?
 }

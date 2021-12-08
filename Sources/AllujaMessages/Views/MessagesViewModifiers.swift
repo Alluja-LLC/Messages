@@ -161,6 +161,9 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     
     /// Custom profile picture
     @Published var customProfile: ((MessageT) -> AnyView)? = nil
+    
+    /// Custom image placeholder
+    @Published var imagePlaceholder: ((ImageItem) -> AnyView)?  = nil
 }
 
 extension MessagesView {
@@ -235,6 +238,14 @@ extension MessagesView {
     public func customProfile<ProfileView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> ProfileView) -> MessagesView {
         self.context.customProfile = { message in
             AnyView(builder(message))
+        }
+        
+        return self
+    }
+    
+    public func imagePlaceholder<PlaceholderView: View>(@ViewBuilder _ builder: @escaping (ImageItem) -> PlaceholderView) -> MessagesView {
+        self.context.imagePlaceholder = { imageItem in
+            AnyView(builder(imageItem))
         }
         
         return self

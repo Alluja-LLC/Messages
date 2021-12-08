@@ -24,7 +24,7 @@ public protocol MessageType: Identifiable, Equatable {
 }
 
 public enum SenderAlignment {
-    case left, center, right
+    case left, right
 }
 
 public protocol SenderType: Identifiable {

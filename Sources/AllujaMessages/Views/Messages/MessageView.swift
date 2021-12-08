@@ -8,7 +8,6 @@
 import SwiftUI
 
 internal struct MessageView<MessageT: MessageType>: View {
-    
     @Environment(\.messageWidth) private var width
     @Binding var container: MessageContainer<MessageT>
     let context: MessagesViewContext<MessageT>
@@ -105,7 +104,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                         case .system(let string):
                             SystemView(messageText: string)
                         case .image(let imageItem):
-                            ImageView(forItem: imageItem)
+                            ImageView(forItem: imageItem, withContext: context)
                                 .frame(width: width, alignment: messageAlignment)
                         case .custom(let customItem):
                             if let renderer = context.customRenderer(forID: customItem.id) {

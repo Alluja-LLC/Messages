@@ -41,9 +41,14 @@ struct MessageGenerator {
     static func generateMessages(fromAuthor author: Sender, quantity: Int) -> [Message] {
         var messages: [Message] = []
         for _ in 0..<quantity {
-            if Int.random(in: 0...2) == 0 {
+            switch Int.random(in: 0...8) {
+            case 0..<2:
                 messages.append(.init(kind: .system(AttributedString("System Message")), sender: author))
-            } else {
+            case 2..<4:
+                messages.append(.init(kind: .image(ImageMessage(imageData: UIImage(named: "Sample1")!.pngData()!, imageURL: nil)), sender: author))
+            case 4..<6:
+                messages.append(.init(kind: .image(ImageMessage(imageData: UIImage(named: "Sample2")!.pngData()!, imageURL: nil)), sender: author))
+            default:
                 let chunk = randomLoremChunk(ofSize: Int.random(in: 5...15))
                 messages.append(.init(kind: .text(TextMessage(text: AttributedString(chunk, attributes: AttributeContainer([.foregroundColor: author.position == .left ? UIColor.label : UIColor.white])), isClient: author.position == .right)), sender: author))
             }

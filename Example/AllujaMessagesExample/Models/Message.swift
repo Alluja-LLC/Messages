@@ -20,6 +20,12 @@ struct TextMessage: TextItem {
     var backgroundColor: Color
 }
 
+struct ImageMessage: ImageItem {
+    var imageData: Data?
+    
+    var imageURL: URL?
+}
+
 struct Message: MessageType {
     init(kind: MessageKind, sender: Sender) {
         self.sender = sender
