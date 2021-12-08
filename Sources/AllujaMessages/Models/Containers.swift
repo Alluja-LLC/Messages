@@ -37,7 +37,7 @@ internal enum MessageGroupTimestampFlag {
 
 internal struct MessageContainer<MessageT: MessageType> {
     let message: MessageT
-    var groupFlags: [MessageGroupFlag] = []
+    var groupFlags: Set<MessageGroupFlag> = []
     var timestampFlag: MessageGroupTimestampFlag = .normal
 
     var id: String {

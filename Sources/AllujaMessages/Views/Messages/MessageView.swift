@@ -13,6 +13,8 @@ internal struct MessageView<MessageT: MessageType>: View {
     let context: MessagesViewContext<MessageT>
     let timestampOffset: CGFloat
     
+    @State private var avatarSize: CGSize = .zero
+    
     private var message: MessageT {
         container.message
     }
@@ -42,12 +44,8 @@ internal struct MessageView<MessageT: MessageType>: View {
 
     var body: some View {
         HStack {
-            if let profile = context.customProfile?(message), message.sender.position == .left {
-                profile
-            }
-                
             VStack(spacing: 2) {
-                if let header = context.customHeader?(message), container.groupFlagsEmptyOrContains(.renderHeader) {
+                if let header = context.header?(message), container.groupFlagsEmptyOrContains(.renderHeader) {
                     if case .system(_) = message.kind {
                         EmptyView()
                     } else {
@@ -57,6 +55,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                             }
                             
                             header
+                                .padding(message.sender.position == .right ? .trailing : .leading, avatarSize.width + 4)
                             
                             if message.sender.position == .left {
                                 Spacer()
@@ -91,7 +90,19 @@ internal struct MessageView<MessageT: MessageType>: View {
                         }
                     }
                     
-                    HStack {
+                    HStack(alignment: .bottom, spacing: 4) {
+                        switch message.kind {
+                        case .system(_):
+                            EmptyView()
+                        default:
+                            if let profile = context.avatar?(message), message.sender.position == .left {
+                                ChildSizeReader(size: $avatarSize) {
+                                    profile
+                                }
+                                .opacity(container.groupFlagsEmptyOrContains(.renderFooter) ? 100 : 0)
+                            }
+                        }
+                        
                         if message.sender.position == .right && messageShouldBeSpaced {
                             Spacer()
                         }
@@ -117,10 +128,22 @@ internal struct MessageView<MessageT: MessageType>: View {
                         if message.sender.position == .left && messageShouldBeSpaced {
                             Spacer()
                         }
+                        
+                        switch message.kind {
+                        case .system(_):
+                            EmptyView()
+                        default:
+                            if let profile = context.avatar?(message), message.sender.position == .right {
+                                ChildSizeReader(size: $avatarSize) {
+                                    profile
+                                }
+                                .opacity(container.groupFlagsEmptyOrContains(.renderFooter) ? 100 : 0)
+                            }
+                        }
                     }
                 }
                 
-                if let footer = context.customFooter?(message), container.groupFlagsEmptyOrContains(.renderFooter) {
+                if let footer = context.footer?(message), container.groupFlagsEmptyOrContains(.renderFooter) {
                     if case .system(_) = message.kind {
                         EmptyView()
                     } else {
@@ -130,6 +153,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                             }
                             
                             footer
+                                .padding(message.sender.position == .right ? .trailing : .leading, avatarSize.width + 4)
                             
                             if message.sender.position == .left {
                                 Spacer()
@@ -139,10 +163,6 @@ internal struct MessageView<MessageT: MessageType>: View {
                 }
             }
             .padding(groupPaddingEdges)
-            
-            if let profile = context.customProfile?(message), message.sender.position == .right {
-                profile
-            }
         }
     }
 }

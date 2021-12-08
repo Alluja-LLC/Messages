@@ -74,13 +74,13 @@ struct ContentView: View {
                 Text("\(message.id)")
                 Text("Menu")
             }
-            .customHeader { message in
+            .messageHeader { message in
                 Text(message.id)
                     .font(.footnote)
                     .bold()
                     .foregroundColor(.gray)
             }
-            .customFooter { message in
+            .messageFooter { message in
                 if footerContentChange {
                     EmptyView()
                 } else {
@@ -89,6 +89,9 @@ struct ContentView: View {
                         .bold()
                         .foregroundColor(.gray)
                 }
+            }
+            .messageAvatar { message in
+                Color.blue.frame(width: 40, height: 40)
             }
             .refreshable {
                 print("REF")
