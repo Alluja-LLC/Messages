@@ -48,7 +48,7 @@ internal extension View {
     func imageViewScale(_ scale: CGFloat) -> some View {
         environment(\.imageViewScale, scale)
     }
-    
+
     func messageWidth(_ width: CGFloat) -> some View {
         environment(\.messageWidth, width)
     }

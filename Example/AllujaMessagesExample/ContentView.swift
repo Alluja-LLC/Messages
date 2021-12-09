@@ -8,11 +8,11 @@
 import SwiftUI
 import AllujaMessages
 
-fileprivate let senders: [Sender] = [
-    Sender(id: "SELF", position: .right),
-    Sender(id: "OTHER1", position: .left),
-    Sender(id: "OTHER2", position: .left),
-    Sender(id: "OTHER3", position: .left)
+private let senders: [Sender] = [
+    Sender(id: "SELF", alignment: .right),
+    Sender(id: "OTHER1", alignment: .left),
+    Sender(id: "OTHER2", alignment: .left),
+    Sender(id: "OTHER3", alignment: .left)
 ]
 
 struct ContentView: View {
@@ -22,13 +22,13 @@ struct ContentView: View {
     @State private var groupMessages: Bool = false
     @State private var groupTimestamps: Bool = false
     let messageFormatter: DateFormatter
-    
+
     init() {
         _messages = State(initialValue: MessageGenerator.generateMessages(fromAuthors: senders, clumpRange: 1...3, clumpQuantity: 5))
         messageFormatter = DateFormatter()
         messageFormatter.dateFormat = "MMM d, h:mm a"
     }
-    
+
     private var groupingOptions: [MessageGroupingOption] {
         var opts: [MessageGroupingOption] = []
         if groupMessages {
@@ -39,33 +39,14 @@ struct ContentView: View {
         }
         return opts
     }
-    
+
     var body: some View {
         NavigationView {
             MessagesView(withMessages: messages, withInputBar: {
-                HStack {
-                    // Hack to get TextEditor to have resizeable height
-                    Text(messageBar)
-                        .foregroundColor(.clear)
-                        .padding(8)
-                        .lineLimit(4)
-                        .frame(maxWidth: .infinity)
-                        .overlay(
-                            TextEditor(text: $messageBar)
-                                .cornerRadius(4)
-                        )
-                    
-                    Button("Send") {
-                        messages.append(.init(kind: .text(TextMessage(text: AttributedString(messageBar, attributes: AttributeContainer([.foregroundColor: UIColor.white])), isClient: true)), sender: senders[0]))
-                        messageBar = ""
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(messageBar.isEmpty)
-                    .animation(.easeInOut(duration: 0.2), value: messageBar.isEmpty)
+                BasicInputBarView(message: $messageBar) {
+                    messages.append(.init(kind: .text(TextMessage(text: AttributedString(messageBar, attributes: AttributeContainer([.foregroundColor: UIColor.white])), isClient: true)), sender: senders[0]))
+                    messageBar = ""
                 }
-                .padding([.top, .bottom], 8)
-                .padding([.leading, .trailing])
-                .background(Color(uiColor: .systemGray6).edgesIgnoringSafeArea([.leading, .trailing, .bottom]))
             })
                 .groupingOptions(groupingOptions)
             .dateFormatter(messageFormatter)
@@ -93,10 +74,12 @@ struct ContentView: View {
                 if case .custom(_) = message.kind {
                     EmptyView()
                 } else {
-                    Color.blue.frame(width: 40, height: 40)
+                    LinearGradient(colors: [.purple, .red, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
+                        .frame(width: 40, height: 40)
+                        .clipShape(Circle())
                 }
             }
-            .customRenderer(forTypeWithID: "custom1") { message, _ in
+            /*.customRenderer(forTypeWithID: "custom1") { message, _ in
                 if case .custom(let item) = message.kind {
                     Text("Custom 1: Hi, \(item.data as? String ?? "unknown")")
                         .foregroundColor(.accentColor)
@@ -106,22 +89,22 @@ struct ContentView: View {
             }
             .customRenderer(forTypeWithID: "custom2") { message, suggestedWidth in
                 HStack {
-                    if message.sender.position == .right {
+                    if message.sender.alignment == .right {
                         Spacer()
                     }
                     
                     if case .custom(let item) = message.kind {
                         Text("Custom 2: Bye, \(item.data as? String ?? "unknown")")
-                            .frame(width: suggestedWidth, alignment: message.sender.position == .right ? .trailing : .leading)
+                            .frame(width: suggestedWidth, alignment: message.sender.alignment == .right ? .trailing : .leading)
                     } else {
                         Text("Error!")
                     }
                     
-                    if message.sender.position == .left {
+                    if message.sender.alignment == .left {
                         Spacer()
                     }
                 }
-            }
+            }*/
             .refreshable {
                 print("REF")
             }
@@ -138,7 +121,7 @@ struct ContentView: View {
                             .foregroundColor(.green)
                     })
                 }
-                
+
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Menu(content: {
                         Toggle("Change Footer", isOn: $footerContentChange)

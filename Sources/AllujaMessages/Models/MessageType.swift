@@ -35,5 +35,5 @@ public protocol SenderType: Identifiable {
     var displayName: String { get }
 
     /// Determines which side the message is placed on
-    var position: SenderAlignment { get }
+    var alignment: SenderAlignment { get }
 }

@@ -53,7 +53,7 @@ internal struct MessagePreview: MessageType {
     }
 
     var kind: MessageKind {
-        .text(TextPreview(isClient: sender.position == .right))
+        .text(TextPreview(isClient: sender.alignment == .right))
     }
 
     var customHeader: AnyView? {
@@ -78,7 +78,7 @@ internal struct SenderPreview: SenderType {
         "Test"
     }
 
-    var position: SenderAlignment {
+    var alignment: SenderAlignment {
         .left
     }
 }

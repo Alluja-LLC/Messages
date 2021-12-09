@@ -12,13 +12,13 @@ internal struct MessageView<MessageT: MessageType>: View {
     @Binding var container: MessageContainer<MessageT>
     let context: MessagesViewContext<MessageT>
     let timestampOffset: CGFloat
-    
+
     @State private var avatarSize: CGSize = .zero
-    
+
     private var message: MessageT {
         container.message
     }
-    
+
     private var messageShouldBeSpaced: Bool {
         if case .text = message.kind {
             return true
@@ -27,7 +27,7 @@ internal struct MessageView<MessageT: MessageType>: View {
         }
         return false
     }
-    
+
     private var groupPaddingEdges: Edge.Set {
         if context.groupingOptions.isEmpty {
             return []
@@ -50,20 +50,20 @@ internal struct MessageView<MessageT: MessageType>: View {
                         EmptyView()
                     } else {
                         HStack {
-                            if message.sender.position == .right {
+                            if message.sender.alignment == .right {
                                 Spacer()
                             }
-                            
+
                             header
-                                .padding(message.sender.position == .right ? .trailing : .leading, avatarSize.width + 4)
-                            
-                            if message.sender.position == .left {
+                                .padding(message.sender.alignment == .right ? .trailing : .leading, avatarSize.width + 4)
+
+                            if message.sender.alignment == .left {
                                 Spacer()
                             }
                         }
                     }
                 }
-                    
+
                 ZStack {
                     if container.timestampFlag != .hidden {
                         HStack {
@@ -72,7 +72,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                                     if container.timestampFlag == .bottom {
                                         Spacer()
                                     }
-                                    
+
                                     Text(context.defaultDateFormatter.string(from: message.timestamp))
                                         .foregroundColor(.secondary)
                                         .font(.footnote)
@@ -80,7 +80,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                                         .fixedSize()
                                         .padding(.trailing)
                                         .offset(x: timestampOffset)
-                                    
+
                                     if container.timestampFlag == .top {
                                         Spacer()
                                     }
@@ -89,25 +89,25 @@ internal struct MessageView<MessageT: MessageType>: View {
                             Spacer()
                         }
                     }
-                    
+
                     HStack(alignment: .bottom, spacing: 4) {
                         switch message.kind {
                         case .system(_):
                             EmptyView()
                         default:
-                            if let profile = context.avatar?(message), message.sender.position == .left && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
+                            if let profile = context.avatar?(message), message.sender.alignment == .left && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
                                 ChildSizeReader(size: $avatarSize) {
                                     profile
                                 }
                                 .opacity(container.groupFlagsEmptyOrContains(.renderProfile) ? 100 : 0)
                             }
                         }
-                        
-                        if message.sender.position == .right && messageShouldBeSpaced {
+
+                        if message.sender.alignment == .right && messageShouldBeSpaced {
                             Spacer()
                         }
-                    
-                        let messageAlignment: Alignment = message.sender.position == .left ? .leading : .trailing
+
+                        let messageAlignment: Alignment = message.sender.alignment == .left ? .leading : .trailing
                         switch message.kind {
                         case .text(let textItem):
                             TextView(forItem: textItem)
@@ -124,16 +124,16 @@ internal struct MessageView<MessageT: MessageType>: View {
                                 Text("No Renderer Found for ID \(customItem.id) :(")
                             }
                         }
-                        
-                        if message.sender.position == .left && messageShouldBeSpaced {
+
+                        if message.sender.alignment == .left && messageShouldBeSpaced {
                             Spacer()
                         }
-                        
+
                         switch message.kind {
                         case .system(_):
                             EmptyView()
                         default:
-                            if let profile = context.avatar?(message), message.sender.position == .right && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
+                            if let profile = context.avatar?(message), message.sender.alignment == .right && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
                                 ChildSizeReader(size: $avatarSize) {
                                     profile
                                 }
@@ -142,20 +142,20 @@ internal struct MessageView<MessageT: MessageType>: View {
                         }
                     }
                 }
-                
+
                 if let footer = context.footer?(message), container.groupFlagsEmptyOrContains(.renderFooter) {
                     if case .system(_) = message.kind {
                         EmptyView()
                     } else {
                         HStack {
-                            if message.sender.position == .right {
+                            if message.sender.alignment == .right {
                                 Spacer()
                             }
-                            
+
                             footer
-                                .padding(message.sender.position == .right ? .trailing : .leading, avatarSize.width + 4)
-                            
-                            if message.sender.position == .left {
+                                .padding(message.sender.alignment == .right ? .trailing : .leading, avatarSize.width + 4)
+
+                            if message.sender.alignment == .left {
                                 Spacer()
                             }
                         }

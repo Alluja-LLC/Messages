@@ -12,7 +12,7 @@ internal struct ImageView<MessageT: MessageType>: View {
     @Environment(\.messageCornerRadius) private var cornerRadius
     @ObservedObject private var context: MessagesViewContext<MessageT>
     let item: ImageItem
-    @State private var image: UIImage? = nil
+    @State private var image: UIImage?
 
     init(forItem item: ImageItem, withContext context: MessagesViewContext<MessageT>) {
         self.item = item
@@ -37,13 +37,13 @@ internal struct ImageView<MessageT: MessageType>: View {
         }
         .task {
             guard let url = item.imageURL, image == nil else { return }
-            
+
             guard let (data, _) = try? await URLSession.shared.data(from: url, delegate: nil) else { return }
-            
+
             processImageData(data)
         }
     }
-    
+
     private func processImageData(_ data: Data) {
         if let tempImage = UIImage(data: data, scale: 1.0) {
             var image = tempImage
@@ -55,7 +55,7 @@ internal struct ImageView<MessageT: MessageType>: View {
     }
 }
 
-fileprivate struct ImageView_Previews: PreviewProvider {
+private struct ImageView_Previews: PreviewProvider {
     static var previews: some View {
         ImageView(forItem: ImagePreview(), withContext: MessagesViewContext<MessagePreview>(messages: []))
     }

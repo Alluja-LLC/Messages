@@ -18,7 +18,7 @@ public enum MessageGroupingOption: Equatable {
 
     /// Collapses message header and footer to use first header and last footer for message chain
     case collapseEnclosingViews
-    
+
     case collapseTimestamps(MessagePositionAnchor)
 }
 
@@ -26,7 +26,7 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     init(messages: [MessageT]) {
         updateMessages(messages)
     }
-    
+
     @Published var messages: [MessageContainer<MessageT>] = []
 
     var maxTimestampViewWidth: CGFloat {
@@ -34,7 +34,7 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
             max(res, message.size.width)
         })
     }
-    
+
     func updateMessages(_ messages: [MessageT]) {
         // Iterate over each message and see if the next one is last
         var completeContainers: [MessageContainer<MessageT>] = []
@@ -44,7 +44,7 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
             // Figure out what options are needed for each message
             var flags: Set<MessageGroupFlag> = []
             var timestampFlag: MessageGroupTimestampFlag = .hidden
-            
+
             // If this is the first message OR the last message ends the group then add flag
             if completeContainers.isEmpty || completeContainers[completeContainers.index(before: i)].groupFlags.contains(.endGroup) {
                 if case .collapseTimestamps(let anchor) = groupingOptions.first(where: { item in
@@ -55,10 +55,10 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
                 }), anchor == .top {
                     timestampFlag = .top
                 }
-                
+
                 flags.insert(.startGroup)
             }
-            
+
             if messageEndsGroup(message) {
                 if case .collapseTimestamps(let anchor) = groupingOptions.first(where: { item in
                     if case .collapseTimestamps(_) = item {
@@ -68,10 +68,10 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
                 }), anchor == .bottom {
                     timestampFlag = .bottom
                 }
-                
+
                 flags.insert(.endGroup)
             }
-            
+
             // If there aren't any timestamp grouping options, then display timestamp normally
             if case .collapseTimestamps(_) = groupingOptions.first(where: { item in
                 if case .collapseTimestamps(_) = item {
@@ -79,11 +79,11 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
                 }
                 return false
             }) {
-                
+
             } else {
                 timestampFlag = .normal
             }
-            
+
             switch message.kind {
             case .system(_):
                 if flags.contains(.endGroup) && !flags.contains(.startGroup) && i != messages.startIndex {
@@ -96,7 +96,7 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
                     if flags.contains(.startGroup) {
                         flags.insert(.renderHeader)
                     }
-                    
+
                     if flags.contains(.endGroup) || footerFallthrough {
                         flags.insert(.renderFooter)
                         footerFallthrough = false
@@ -105,7 +105,7 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
                     flags.insert(.renderHeader)
                     flags.insert(.renderFooter)
                 }
-                
+
                 if groupingOptions.contains(.collapseProfilePicture) {
                     if flags.contains(.endGroup) {
                         flags.insert(.renderProfile)
@@ -118,14 +118,13 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
             }
             completeContainers.append(.init(message: message, groupFlags: flags, timestampFlag: timestampFlag))
         }
-        
+
         self.messages = completeContainers
     }
 
     struct CustomRendererConfiguration: Identifiable {
         let id: String
 
-        
         let renderer: (MessageT, CGFloat) -> AnyView
     }
 
@@ -139,15 +138,15 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
 
         return nil
     }
-    
+
     /// Custom header and footer options
-    @Published var header: ((MessageT) -> AnyView)? = nil
-    @Published var footer: ((MessageT) -> AnyView)? = nil
+    @Published var header: ((MessageT) -> AnyView)?
+    @Published var footer: ((MessageT) -> AnyView)?
 
     /// Configured grouping options
     @Published var groupingOptions: [MessageGroupingOption] = [] {
         didSet {
-            updateMessages(messages.map{ $0.message })
+            updateMessages(messages.map { $0.message })
         }
     }
 
@@ -164,15 +163,15 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
 
     /// Determines the scale to use for the `ImageView`
     @Published var imageViewScale: CGFloat = 1.0
-    
+
     /// Context menu for each message
-    @Published var messageContextMenu: ((MessageT) -> AnyView)? = nil
-    
+    @Published var messageContextMenu: ((MessageT) -> AnyView)?
+
     /// Custom image placeholder
-    @Published var imagePlaceholder: ((ImageItem) -> AnyView)?  = nil
-    
+    @Published var imagePlaceholder: ((ImageItem) -> AnyView)?
+
     /// Avatar view for message
-    @Published var avatar: ((MessageT) -> AnyView)? = nil
+    @Published var avatar: ((MessageT) -> AnyView)?
 }
 
 extension MessagesView {
@@ -219,44 +218,44 @@ extension MessagesView {
 
         return self
     }
-    
+
     public func messageHeader<HeaderView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> HeaderView) -> MessagesView {
         self.context.header = { message in
             AnyView(builder(message))
         }
-        
+
         return self
     }
-    
+
     public func messageFooter<FooterView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> FooterView) -> MessagesView {
         self.context.footer = { message in
             AnyView(builder(message))
         }
-        
+
         return self
     }
-    
+
     public func messageContextMenu<MenuItems: View>(@ViewBuilder _ builder: @escaping (MessageT) -> MenuItems) -> MessagesView {
         self.context.messageContextMenu = { message in
             AnyView(builder(message))
         }
-        
+
         return self
     }
-    
+
     public func imagePlaceholder<PlaceholderView: View>(@ViewBuilder _ builder: @escaping (ImageItem) -> PlaceholderView) -> MessagesView {
         self.context.imagePlaceholder = { imageItem in
             AnyView(builder(imageItem))
         }
-        
+
         return self
     }
-    
+
     public func messageAvatar<AvatarView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> AvatarView) -> MessagesView {
         context.avatar = { message in
             AnyView(builder(message))
         }
-        
+
         return self
     }
 }

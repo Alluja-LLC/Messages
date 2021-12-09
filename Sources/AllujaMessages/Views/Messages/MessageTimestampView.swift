@@ -10,7 +10,7 @@ import SwiftUI
 struct MessageTimestampView: View {
     let timestamp: Date
     let formatter: DateFormatter
-    
+
     var body: some View {
         VStack(alignment: .center) {
             Text(formatter.string(from: timestamp))
@@ -20,13 +20,13 @@ struct MessageTimestampView: View {
     }
 }
 
-fileprivate struct MessageTimestampView_Previews: PreviewProvider {
+private struct MessageTimestampView_Previews: PreviewProvider {
     static var formatter: DateFormatter {
         let fmt = DateFormatter()
         fmt.dateFormat = "MMM d, h:mm a"
         return fmt
     }
-    
+
     static var previews: some View {
         MessageTimestampView(timestamp: Date(), formatter: formatter)
     }

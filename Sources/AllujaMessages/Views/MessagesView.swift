@@ -10,9 +10,9 @@ import SwiftUI
 public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
     // Automatically forward native refreshable modifier
     @Environment(\.refresh) var refresh
-    
+
     private let inputBar: () -> InputBarT
-    
+
     @FocusState private var focusInput: Bool
     @State private var dragOffset: CGFloat = .zero
 
@@ -32,7 +32,7 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
             // Split if last message was sent more than 5 minutes ago or the sender changes
             return message.timestamp.addingTimeInterval(5 * 60) < messages[index + 1].timestamp || message.sender.id != messages[index + 1].sender.id
         }
-        
+
         self.context = context
     }
 
@@ -88,24 +88,24 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                     }
                 }
                 .contentShape(Rectangle()) // Make sure hit testing covers entire area
-                .if (focusInput) {
+                .if(focusInput) {
                     $0.onTapGesture {
                         focusInput = false
                     }
                 }
                 .imageViewScale(context.imageViewScale)
             }
-            
+
             inputBar()
                 .focused($focusInput)
         }
     }
 }
 
-fileprivate struct MessagesView_Previews: PreviewProvider {
+private struct MessagesView_Previews: PreviewProvider {
     static var previews: some View {
         MessagesView(withMessages: [MessagePreview](), withInputBar: {
-            BasicInputBarView()
+            BasicInputBarView(message: .constant("Hi"), onSend: {})
         })
     }
 }
