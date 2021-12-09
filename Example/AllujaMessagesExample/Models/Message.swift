@@ -26,6 +26,12 @@ struct ImageMessage: ImageItem {
     var imageURL: URL?
 }
 
+struct CustomMessage: CustomItem {
+    var id: String
+    
+    var data: Any?
+}
+
 struct Message: MessageType {
     init(kind: MessageKind, sender: Sender) {
         self.sender = sender

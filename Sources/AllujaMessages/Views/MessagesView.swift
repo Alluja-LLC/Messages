@@ -11,12 +11,12 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
     // Automatically forward native refreshable modifier
     @Environment(\.refresh) var refresh
     
-    // Allows for Messages to keep track of timestamp view size and resize gestures accordingly
     private let inputBar: () -> InputBarT
     
     @FocusState private var focusInput: Bool
     @State private var dragOffset: CGFloat = .zero
 
+    // Holds all message data
     @ObservedObject internal var context: MessagesViewContext<MessageT>
 
     public init(withMessages messages: [MessageT], @ViewBuilder withInputBar inputBar: @escaping () -> InputBarT) {
@@ -46,16 +46,12 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                                 MessageView(container: $message, context: context, timestampOffset: geometry.size.width)
                                     .padding([.top, .bottom], 2)
                                     .contentShape(Rectangle())
-                                    .id(message.id)
-                                    .if(message.id == context.messages.last!.id) {
-                                        // Temporary fix for ScrollView not scrolling to last message properly
-                                        $0.padding(.bottom, 50)
-                                    }
                                     .if(context.messageContextMenu != nil) {
                                         $0.contextMenu {
                                             context.messageContextMenu!(message.message)
                                         }
                                     }
+                                    .id(message.id)
                             }
                         }
                         .padding([.leading, .trailing], 8)
@@ -64,9 +60,9 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                                 value.scrollTo(context.messages.last?.id)
                             }
                         }
-                        .onChange(of: context.messages.count) { _ in
+                        .onChange(of: context.messages) { messages in
                             withAnimation {
-                                value.scrollTo(context.messages.last?.id)
+                                value.scrollTo(messages.last?.id)
                             }
                         }
                         .listRowInsets(EdgeInsets())

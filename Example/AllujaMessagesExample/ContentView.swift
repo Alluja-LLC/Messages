@@ -58,7 +58,6 @@ struct ContentView: View {
                     Button("Send") {
                         messages.append(.init(kind: .text(TextMessage(text: AttributedString(messageBar, attributes: AttributeContainer([.foregroundColor: UIColor.white])), isClient: true)), sender: senders[0]))
                         messageBar = ""
-                        // UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(messageBar.isEmpty)
@@ -91,7 +90,37 @@ struct ContentView: View {
                 }
             }
             .messageAvatar { message in
-                Color.blue.frame(width: 40, height: 40)
+                if case .custom(_) = message.kind {
+                    EmptyView()
+                } else {
+                    Color.blue.frame(width: 40, height: 40)
+                }
+            }
+            .customRenderer(forTypeWithID: "custom1") { message, _ in
+                if case .custom(let item) = message.kind {
+                    Text("Custom 1: Hi, \(item.data as? String ?? "unknown")")
+                        .foregroundColor(.accentColor)
+                } else {
+                    Text("Error!")
+                }
+            }
+            .customRenderer(forTypeWithID: "custom2") { message, suggestedWidth in
+                HStack {
+                    if message.sender.position == .right {
+                        Spacer()
+                    }
+                    
+                    if case .custom(let item) = message.kind {
+                        Text("Custom 2: Bye, \(item.data as? String ?? "unknown")")
+                            .frame(width: suggestedWidth, alignment: message.sender.position == .right ? .trailing : .leading)
+                    } else {
+                        Text("Error!")
+                    }
+                    
+                    if message.sender.position == .left {
+                        Spacer()
+                    }
+                }
             }
             .refreshable {
                 print("REF")

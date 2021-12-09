@@ -16,7 +16,6 @@ struct MessageTimestampView: View {
             Text(formatter.string(from: timestamp))
                 .foregroundColor(.secondary)
                 .font(.footnote)
-                .bold()
         }
     }
 }

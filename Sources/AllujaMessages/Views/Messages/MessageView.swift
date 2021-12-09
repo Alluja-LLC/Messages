@@ -95,11 +95,11 @@ internal struct MessageView<MessageT: MessageType>: View {
                         case .system(_):
                             EmptyView()
                         default:
-                            if let profile = context.avatar?(message), message.sender.position == .left {
+                            if let profile = context.avatar?(message), message.sender.position == .left && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
                                 ChildSizeReader(size: $avatarSize) {
                                     profile
                                 }
-                                .opacity(container.groupFlagsEmptyOrContains(.renderFooter) ? 100 : 0)
+                                .opacity(container.groupFlagsEmptyOrContains(.renderProfile) ? 100 : 0)
                             }
                         }
                         
@@ -119,7 +119,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                                 .frame(width: width, alignment: messageAlignment)
                         case .custom(let customItem):
                             if let renderer = context.customRenderer(forID: customItem.id) {
-                                renderer(message)
+                                renderer(message, width)
                             } else {
                                 Text("No Renderer Found for ID \(customItem.id) :(")
                             }
@@ -133,11 +133,11 @@ internal struct MessageView<MessageT: MessageType>: View {
                         case .system(_):
                             EmptyView()
                         default:
-                            if let profile = context.avatar?(message), message.sender.position == .right {
+                            if let profile = context.avatar?(message), message.sender.position == .right && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
                                 ChildSizeReader(size: $avatarSize) {
                                     profile
                                 }
-                                .opacity(container.groupFlagsEmptyOrContains(.renderFooter) ? 100 : 0)
+                                .opacity(container.groupFlagsEmptyOrContains(.renderProfile) ? 100 : 0)
                             }
                         }
                     }

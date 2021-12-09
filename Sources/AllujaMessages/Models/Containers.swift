@@ -35,7 +35,7 @@ internal enum MessageGroupTimestampFlag {
     case hidden
 }
 
-internal struct MessageContainer<MessageT: MessageType> {
+internal struct MessageContainer<MessageT: MessageType>: Identifiable, Equatable {
     let message: MessageT
     var groupFlags: Set<MessageGroupFlag> = []
     var timestampFlag: MessageGroupTimestampFlag = .normal

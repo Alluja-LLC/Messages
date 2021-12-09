@@ -13,7 +13,7 @@ public enum MessagePositionAnchor: Equatable {
 }
 
 public enum MessageGroupingOption: Equatable {
-    /// Hides profile picture for all but last message in chain from single sender
+    /// Hides profile picture for all but last message in group
     case collapseProfilePicture
 
     /// Collapses message header and footer to use first header and last footer for message chain
@@ -125,13 +125,14 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     struct CustomRendererConfiguration: Identifiable {
         let id: String
 
-        let renderer: (MessageT) -> AnyView
+        
+        let renderer: (MessageT, CGFloat) -> AnyView
     }
 
     /// Custom renderers added to handle custom message types
     @Published var customRenderers: [CustomRendererConfiguration] = []
 
-    func customRenderer(forID id: String) -> ((MessageT) -> AnyView)? {
+    func customRenderer(forID id: String) -> ((MessageT, CGFloat) -> AnyView)? {
         if let renderer = customRenderers.first(where: { $0.id == id }) {
             return renderer.renderer
         }
@@ -176,9 +177,9 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
 
 extension MessagesView {
     /// Adds a custom renderer to use with a certain kind of custom message
-    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder renderer: @escaping (MessageT) -> CustomView) -> MessagesView {
-        self.context.customRenderers.append(.init(id: typeID, renderer: { (message) in
-            return AnyView(renderer(message))
+    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder renderer: @escaping (MessageT, CGFloat) -> CustomView) -> MessagesView {
+        self.context.customRenderers.append(.init(id: typeID, renderer: { (message, suggestedWidth) in
+            return AnyView(renderer(message, suggestedWidth))
         }))
 
         return self
