@@ -11,19 +11,24 @@ internal struct ImageView<MessageT: MessageType>: View {
     @Environment(\.messageWidth) private var width
     @Environment(\.messageCornerRadius) private var cornerRadius
     @ObservedObject private var context: MessagesViewContext<MessageT>
+    let message: MessageT
     let item: ImageItem
     @State private var image: UIImage?
 
-    init(forItem item: ImageItem, withContext context: MessagesViewContext<MessageT>) {
-        self.item = item
+    init(forMessage message: MessageT, withContext context: MessagesViewContext<MessageT>) {
+        self.message = message
         self.context = context
+        
+        guard case .image(let item) = message.kind else { fatalError("This shouldn't be possible to execute") }
+        
+        self.item = item
     }
 
     var body: some View {
         Group {
             if let image = image {
                 Image(uiImage: image)
-            } else if let placeholder = context.imagePlaceholder?(item) {
+            } else if let placeholder = context.imagePlaceholder?(message) {
                 placeholder
             } else {
                 ProgressView()
@@ -57,6 +62,6 @@ internal struct ImageView<MessageT: MessageType>: View {
 
 private struct ImageView_Previews: PreviewProvider {
     static var previews: some View {
-        ImageView(forItem: ImagePreview(), withContext: MessagesViewContext<MessagePreview>(messages: []))
+        ImageView(forMessage: MessagePreview(), withContext: MessagesViewContext<MessagePreview>(messages: []))
     }
 }

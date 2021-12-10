@@ -8,11 +8,8 @@
 import SwiftUI
 import AllujaMessages
 
-private let senders: [Sender] = [
-    Sender(id: "SELF", alignment: .right),
-    Sender(id: "OTHER1", alignment: .left),
-    Sender(id: "OTHER2", alignment: .left),
-    Sender(id: "OTHER3", alignment: .left)
+private let senders: [MessageAlignment] = [
+    .right, .left, .left, .left
 ]
 
 struct ContentView: View {
@@ -44,7 +41,7 @@ struct ContentView: View {
         NavigationView {
             MessagesView(withMessages: messages, withInputBar: {
                 BasicInputBarView(message: $messageBar) {
-                    messages.append(.init(kind: .text(TextMessage(text: AttributedString(messageBar, attributes: AttributeContainer([.foregroundColor: UIColor.white])), isClient: true)), sender: senders[0]))
+                    messages.append(.init(kind: .text(TextMessage(text: AttributedString(messageBar, attributes: AttributeContainer([.foregroundColor: UIColor.white])), isClient: true)), alignment: senders[0]))
                     messageBar = ""
                 }
             })
@@ -64,7 +61,7 @@ struct ContentView: View {
                 if footerContentChange {
                     EmptyView()
                 } else {
-                    Text(message.sender.displayName)
+                    Text("FOOTER")
                         .font(.footnote)
                         .bold()
                         .foregroundColor(.gray)
@@ -79,7 +76,17 @@ struct ContentView: View {
                         .clipShape(Circle())
                 }
             }
-            /*.customRenderer(forTypeWithID: "custom1") { message, _ in
+            .proxyOnAppear { value in
+                withAnimation {
+                    value.scrollTo(messages.last?.id)
+                }
+            }
+            .proxyOnMessagesChange { value, msgs in
+                withAnimation {
+                    value.scrollTo(msgs.last?.id)
+                }
+            }
+            .customRenderer(forTypeWithID: "custom1") { message, _ in
                 if case .custom(let item) = message.kind {
                     Text("Custom 1: Hi, \(item.data as? String ?? "unknown")")
                         .foregroundColor(.accentColor)
@@ -89,22 +96,22 @@ struct ContentView: View {
             }
             .customRenderer(forTypeWithID: "custom2") { message, suggestedWidth in
                 HStack {
-                    if message.sender.alignment == .right {
+                    if message.alignment == .right {
                         Spacer()
                     }
                     
                     if case .custom(let item) = message.kind {
                         Text("Custom 2: Bye, \(item.data as? String ?? "unknown")")
-                            .frame(width: suggestedWidth, alignment: message.sender.alignment == .right ? .trailing : .leading)
+                            .frame(width: suggestedWidth, alignment: message.alignment == .right ? .trailing : .leading)
                     } else {
                         Text("Error!")
                     }
                     
-                    if message.sender.alignment == .left {
+                    if message.alignment == .left {
                         Spacer()
                     }
                 }
-            }*/
+            }
             .refreshable {
                 print("REF")
             }

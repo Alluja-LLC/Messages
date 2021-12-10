@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-public enum MessagePositionAnchor: Equatable {
+public enum TimestampPositionAnchor: Equatable {
     case bottom, top
 }
 
@@ -19,7 +19,8 @@ public enum MessageGroupingOption: Equatable {
     /// Collapses message header and footer to use first header and last footer for message chain
     case collapseEnclosingViews
 
-    case collapseTimestamps(MessagePositionAnchor)
+    /// Collapses all timestamps to a single one either at the absolute top or bottom of the group
+    case collapseTimestamps(TimestampPositionAnchor)
 }
 
 internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
@@ -30,9 +31,9 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     @Published var messages: [MessageContainer<MessageT>] = []
 
     var maxTimestampViewWidth: CGFloat {
-        messages.reduce(CGFloat.zero, { res, message in
+        showTimestampOnSwipe ? messages.reduce(CGFloat.zero, { res, message in
             max(res, message.size.width)
-        })
+        }) : 0
     }
 
     func updateMessages(_ messages: [MessageT]) {
@@ -168,10 +169,14 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     @Published var messageContextMenu: ((MessageT) -> AnyView)?
 
     /// Custom image placeholder
-    @Published var imagePlaceholder: ((ImageItem) -> AnyView)?
+    @Published var imagePlaceholder: ((MessageT) -> AnyView)?
 
     /// Avatar view for message
     @Published var avatar: ((MessageT) -> AnyView)?
+    
+    /// Called when the messages view appears or messages array changes respectively, allows for control over the ScrollViewReader
+    @Published var proxyOnAppear: ((ScrollViewProxy) -> Void)?
+    @Published var proxyOnMessagesChange: ((ScrollViewProxy, [MessageT]) -> Void)?
 }
 
 extension MessagesView {
@@ -219,7 +224,8 @@ extension MessagesView {
         return self
     }
 
-    public func messageHeader<HeaderView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> HeaderView) -> MessagesView {
+    /// Adds a view for all message headers customizable to each message
+    public func messageHeader<HeaderView: View>(@ViewBuilder builder: @escaping (MessageT) -> HeaderView) -> MessagesView {
         self.context.header = { message in
             AnyView(builder(message))
         }
@@ -227,7 +233,8 @@ extension MessagesView {
         return self
     }
 
-    public func messageFooter<FooterView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> FooterView) -> MessagesView {
+    /// Adds a view for all message footers customizable to each message
+    public func messageFooter<FooterView: View>(@ViewBuilder builder: @escaping (MessageT) -> FooterView) -> MessagesView {
         self.context.footer = { message in
             AnyView(builder(message))
         }
@@ -235,7 +242,8 @@ extension MessagesView {
         return self
     }
 
-    public func messageContextMenu<MenuItems: View>(@ViewBuilder _ builder: @escaping (MessageT) -> MenuItems) -> MessagesView {
+    /// Adds a context menu for all messages customizable to each message
+    public func messageContextMenu<MenuItems: View>(@ViewBuilder builder: @escaping (MessageT) -> MenuItems) -> MessagesView {
         self.context.messageContextMenu = { message in
             AnyView(builder(message))
         }
@@ -243,7 +251,8 @@ extension MessagesView {
         return self
     }
 
-    public func imagePlaceholder<PlaceholderView: View>(@ViewBuilder _ builder: @escaping (ImageItem) -> PlaceholderView) -> MessagesView {
+    /// Adds a placeholder view for all image views customizable to each image
+    public func imagePlaceholder<PlaceholderView: View>(@ViewBuilder builder: @escaping (MessageT) -> PlaceholderView) -> MessagesView {
         self.context.imagePlaceholder = { imageItem in
             AnyView(builder(imageItem))
         }
@@ -251,11 +260,23 @@ extension MessagesView {
         return self
     }
 
-    public func messageAvatar<AvatarView: View>(@ViewBuilder _ builder: @escaping (MessageT) -> AvatarView) -> MessagesView {
+    public func messageAvatar<AvatarView: View>(@ViewBuilder builder: @escaping (MessageT) -> AvatarView) -> MessagesView {
         context.avatar = { message in
             AnyView(builder(message))
         }
 
+        return self
+    }
+    
+    public func proxyOnAppear(perform action: @escaping (ScrollViewProxy) -> Void) -> MessagesView {
+        context.proxyOnAppear = action
+        
+        return self
+    }
+    
+    public func proxyOnMessagesChange(perform action: @escaping (ScrollViewProxy, [MessageT]) -> Void) -> MessagesView {
+        context.proxyOnMessagesChange = action
+        
         return self
     }
 }

@@ -43,127 +43,125 @@ internal struct MessageView<MessageT: MessageType>: View {
     }
 
     var body: some View {
-        HStack {
-            VStack(spacing: 2) {
-                if let header = context.header?(message), container.groupFlagsEmptyOrContains(.renderHeader) {
-                    if case .system(_) = message.kind {
-                        EmptyView()
-                    } else {
-                        HStack {
-                            if message.sender.alignment == .right {
-                                Spacer()
-                            }
-
-                            header
-                                .padding(message.sender.alignment == .right ? .trailing : .leading, avatarSize.width + 4)
-
-                            if message.sender.alignment == .left {
-                                Spacer()
-                            }
-                        }
-                    }
-                }
-
-                ZStack {
-                    if container.timestampFlag != .hidden {
-                        HStack {
-                            ChildSizeReader(size: $container.size) {
-                                VStack {
-                                    if container.timestampFlag == .bottom {
-                                        Spacer()
-                                    }
-
-                                    Text(context.defaultDateFormatter.string(from: message.timestamp))
-                                        .foregroundColor(.secondary)
-                                        .font(.footnote)
-                                        .bold()
-                                        .fixedSize()
-                                        .padding(.trailing)
-                                        .offset(x: timestampOffset)
-
-                                    if container.timestampFlag == .top {
-                                        Spacer()
-                                    }
-                                }
-                            }
-                            Spacer()
-                        }
-                    }
-
-                    HStack(alignment: .bottom, spacing: 4) {
-                        switch message.kind {
-                        case .system(_):
-                            EmptyView()
-                        default:
-                            if let profile = context.avatar?(message), message.sender.alignment == .left && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
-                                ChildSizeReader(size: $avatarSize) {
-                                    profile
-                                }
-                                .opacity(container.groupFlagsEmptyOrContains(.renderProfile) ? 100 : 0)
-                            }
-                        }
-
-                        if message.sender.alignment == .right && messageShouldBeSpaced {
+        VStack(spacing: 2) {
+            if let header = context.header?(message), container.groupFlagsEmptyOrContains(.renderHeader) {
+                if case .system(_) = message.kind {
+                    EmptyView()
+                } else {
+                    HStack {
+                        if message.alignment == .right {
                             Spacer()
                         }
 
-                        let messageAlignment: Alignment = message.sender.alignment == .left ? .leading : .trailing
-                        switch message.kind {
-                        case .text(let textItem):
-                            TextView(forItem: textItem)
-                                .frame(width: width, alignment: messageAlignment)
-                        case .system(let string):
-                            SystemView(messageText: string)
-                        case .image(let imageItem):
-                            ImageView(forItem: imageItem, withContext: context)
-                                .frame(width: width, alignment: messageAlignment)
-                        case .custom(let customItem):
-                            if let renderer = context.customRenderer(forID: customItem.id) {
-                                renderer(message, width)
-                            } else {
-                                Text("No Renderer Found for ID \(customItem.id) :(")
-                            }
-                        }
+                        header
+                            .padding(message.alignment == .right ? .trailing : .leading, avatarSize.width + 4)
 
-                        if message.sender.alignment == .left && messageShouldBeSpaced {
+                        if message.alignment == .left {
                             Spacer()
-                        }
-
-                        switch message.kind {
-                        case .system(_):
-                            EmptyView()
-                        default:
-                            if let profile = context.avatar?(message), message.sender.alignment == .right && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
-                                ChildSizeReader(size: $avatarSize) {
-                                    profile
-                                }
-                                .opacity(container.groupFlagsEmptyOrContains(.renderProfile) ? 100 : 0)
-                            }
-                        }
-                    }
-                }
-
-                if let footer = context.footer?(message), container.groupFlagsEmptyOrContains(.renderFooter) {
-                    if case .system(_) = message.kind {
-                        EmptyView()
-                    } else {
-                        HStack {
-                            if message.sender.alignment == .right {
-                                Spacer()
-                            }
-
-                            footer
-                                .padding(message.sender.alignment == .right ? .trailing : .leading, avatarSize.width + 4)
-
-                            if message.sender.alignment == .left {
-                                Spacer()
-                            }
                         }
                     }
                 }
             }
-            .padding(groupPaddingEdges)
+
+            ZStack {
+                if container.timestampFlag != .hidden {
+                    HStack {
+                        ChildSizeReader(size: $container.size) {
+                            VStack {
+                                if container.timestampFlag == .bottom {
+                                    Spacer()
+                                }
+
+                                Text(context.defaultDateFormatter.string(from: message.timestamp))
+                                    .foregroundColor(.secondary)
+                                    .font(.footnote)
+                                    .bold()
+                                    .fixedSize()
+                                    .padding(.trailing)
+                                    .offset(x: timestampOffset)
+
+                                if container.timestampFlag == .top {
+                                    Spacer()
+                                }
+                            }
+                        }
+                        Spacer()
+                    }
+                }
+
+                HStack(alignment: .bottom, spacing: 4) {
+                    switch message.kind {
+                    case .system(_):
+                        EmptyView()
+                    default:
+                        if let profile = context.avatar?(message), message.alignment == .left && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
+                            ChildSizeReader(size: $avatarSize) {
+                                profile
+                            }
+                            .opacity(container.groupFlagsEmptyOrContains(.renderProfile) ? 100 : 0)
+                        }
+                    }
+
+                    if message.alignment == .right && messageShouldBeSpaced {
+                        Spacer()
+                    }
+
+                    let messageAlignment: Alignment = message.alignment == .left ? .leading : .trailing
+                    switch message.kind {
+                    case .text(let textItem):
+                        TextView(forItem: textItem)
+                            .frame(width: width, alignment: messageAlignment)
+                    case .system(let string):
+                        SystemView(messageText: string)
+                    case .image(_):
+                        ImageView(forMessage: message, withContext: context)
+                            .frame(width: width, alignment: messageAlignment)
+                    case .custom(let customItem):
+                        if let renderer = context.customRenderer(forID: customItem.id) {
+                            renderer(message, width)
+                        } else {
+                            Text("No Renderer Found for ID \(customItem.id) :(")
+                        }
+                    }
+
+                    if message.alignment == .left && messageShouldBeSpaced {
+                        Spacer()
+                    }
+
+                    switch message.kind {
+                    case .system(_):
+                        EmptyView()
+                    default:
+                        if let profile = context.avatar?(message), message.alignment == .right && (container.groupFlagsEmptyOrContains(.renderProfile) || container.groupFlagsEmptyOrContains(.renderClearProfile)) {
+                            ChildSizeReader(size: $avatarSize) {
+                                profile
+                            }
+                            .opacity(container.groupFlagsEmptyOrContains(.renderProfile) ? 100 : 0)
+                        }
+                    }
+                }
+            }
+
+            if let footer = context.footer?(message), container.groupFlagsEmptyOrContains(.renderFooter) {
+                if case .system(_) = message.kind {
+                    EmptyView()
+                } else {
+                    HStack {
+                        if message.alignment == .right {
+                            Spacer()
+                        }
+
+                        footer
+                            .padding(message.alignment == .right ? .trailing : .leading, avatarSize.width + 4)
+
+                        if message.alignment == .left {
+                            Spacer()
+                        }
+                    }
+                }
+            }
         }
+        .padding(groupPaddingEdges)
     }
 }
 

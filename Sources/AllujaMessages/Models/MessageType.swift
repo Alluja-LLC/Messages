@@ -8,32 +8,21 @@
 import Foundation
 import SwiftUI
 
-public protocol MessageType: Identifiable, Equatable {
-    /// Sender of the message
-    associatedtype SenderT: SenderType
-    var sender: SenderT { get }
+public enum MessageAlignment {
+    case left, right
+}
 
+public protocol MessageType: Identifiable, Equatable {
     /// Unique ID that identifies this message
     var id: String { get }
 
     /// When the message was sent
     var timestamp: Date { get }
 
-    /// The type of message
+    /// The kind of message
     var kind: MessageKind { get }
-}
-
-public enum SenderAlignment {
-    case left, right
-}
-
-public protocol SenderType: Identifiable {
-    /// Unique ID for each sender
-    var id: String { get }
-
-    /// Display name for each sender
-    var displayName: String { get }
-
+    
     /// Determines which side the message is placed on
-    var alignment: SenderAlignment { get }
+    /// This is ignored for messages with a `.system` kind and all custom messages
+    var alignment: MessageAlignment { get }
 }

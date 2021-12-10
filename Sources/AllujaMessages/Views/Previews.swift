@@ -40,8 +40,8 @@ internal struct ImagePreview: ImageItem {
 }
 
 internal struct MessagePreview: MessageType {
-    var sender: SenderPreview {
-        SenderPreview()
+    var alignment: MessageAlignment {
+        .left
     }
 
     var id: String {
@@ -53,7 +53,7 @@ internal struct MessagePreview: MessageType {
     }
 
     var kind: MessageKind {
-        .text(TextPreview(isClient: sender.alignment == .right))
+        .text(TextPreview(isClient: alignment == .right))
     }
 
     var customHeader: AnyView? {
@@ -62,23 +62,5 @@ internal struct MessagePreview: MessageType {
 
     var customFooter: AnyView? {
         nil
-    }
-}
-
-internal struct SenderPreview: SenderType {
-    func placeholder(forPhase phase: AsyncImagePhase) -> AnyView? {
-        nil
-    }
-
-    var displayName: String {
-        "Test Name"
-    }
-
-    var id: String {
-        "Test"
-    }
-
-    var alignment: SenderAlignment {
-        .left
     }
 }

@@ -33,8 +33,8 @@ struct CustomMessage: CustomItem {
 }
 
 struct Message: MessageType {
-    init(kind: MessageKind, sender: Sender) {
-        self.sender = sender
+    init(kind: MessageKind, alignment: MessageAlignment) {
+        self.alignment = alignment
         self.id = UUID().uuidString
         self.kind = kind
     }
@@ -47,15 +47,7 @@ struct Message: MessageType {
         lhs.id == rhs.id
     }
 
-    let sender: Sender
-
     let id: String
-}
-
-struct Sender: SenderType {
-    let id: String
-
-    let displayName: String = "Some Sender"
-
-    var alignment: SenderAlignment
+    
+    let alignment: MessageAlignment
 }

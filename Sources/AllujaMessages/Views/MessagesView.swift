@@ -30,7 +30,7 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
             }
 
             // Split if last message was sent more than 5 minutes ago or the sender changes
-            return message.timestamp.addingTimeInterval(5 * 60) < messages[index + 1].timestamp || message.sender.id != messages[index + 1].sender.id
+            return message.timestamp.addingTimeInterval(5 * 60) < messages[index + 1].timestamp || message.id != messages[index + 1].id
         }
 
         self.context = context
@@ -56,14 +56,10 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                         }
                         .padding([.leading, .trailing], 8)
                         .onAppear {
-                            withAnimation {
-                                value.scrollTo(context.messages.last?.id)
-                            }
+                            context.proxyOnAppear?(value)
                         }
                         .onChange(of: context.messages) { messages in
-                            withAnimation {
-                                value.scrollTo(messages.last?.id)
-                            }
+                            context.proxyOnMessagesChange?(value, messages.map{ $0.message })
                         }
                         .listRowInsets(EdgeInsets())
                         .listRowSeparator(.hidden)
