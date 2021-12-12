@@ -51,6 +51,10 @@ This is the main view of the library, taking the messages to be shown and an inp
 
 All of the modifiers are defined in [`MessagesViewModifiers.swift`](../Sources/AllujaMessages/Views/MessagesViewModifiers.swift).
 
+## Basic Style Changes
+
+AllujaMessages supports changing the default maximum message width (75% of the view width) and the default corner radius (8.0) through the `.messageMaxWidth()` and `.messageCornerRadius()` modifiers respectively. The width modifier is a closure that takes the view's geometry information and returns a `CGFloat`.
+
 ## Grouping
 AllujaMessages has built-in support for message grouping along with multiple ways to customize it. This puts messages together if they fall under a certain rule (changeable by the `configureMessageEndsGroup()` modifier).
 
@@ -75,11 +79,130 @@ public enum MessageGroupingOption: Equatable {
 ```
 
 ## Headers, Footers, and Avatars
+All headers, footers, and avatars take a message object and return a SwiftUI view. Below is an example implementation:
+
+```swift
+} // End of MessagesView declaration
+.messageHeader { message in
+    Text(message.id)
+        .font(.footnote)
+        .bold()
+        .foregroundColor(.gray)
+}
+.messageFooter { _ in
+    if dontShowFooter {
+        EmptyView() // Using an EmptyView removes the header/footer/avatar from the message
+    } else {
+        Text("FOOTER")
+            .font(.footnote)
+            .bold()
+            .foregroundColor(.gray)
+    }
+}
+.messageAvatar { message in
+    if case .custom(_) = message.kind {
+        EmptyView()
+    } else {
+        LinearGradient(colors: [.purple, .red, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .frame(width: 40, height: 40)
+            .clipShape(Circle())
+    }
+}
+```
+
+Using an `EmptyView` removes the view from the message.
 
 ## Context Menus
+<img src="../Assets/ContextMenu.png" alt="Sample Context Menu" height="300"/>
 
-## ScrollViewReader Control
+Messages can have context menus through the `.messageContextMenu()` modifier. Similarly to headers, footers and avatars, returning an `EmptyView` from this builder disables the context menu for the specific given message.
+
+## `ScrollViewReader` Control
+
+AllujaMessages uses a `ScrollViewReader` internally to allow control over which messages are shown at any given time. The current implementation allows for you to hook the `.onAppear()` and `.onChange(messages)` events through the `.proxyOnAppear()` and `.proxyOnMessagesChange()` modifiers respectively. These modifiers provide a reference to the `ScrollViewProxy` given by the internal `ScrollViewReader`. `.proxyOnMessagesChange()` also provides a reference to the internal messages array which is recommended to use over your source message array due to SwiftUI's update order.
+
+Sample recommended implementation:
+
+```swift
+} // End of MessagesView declaration
+.proxyOnAppear { value in
+    withAnimation {
+        value.scrollTo(messages.last?.id)
+    }
+}
+.proxyOnMessagesChange { value, msgs in
+    withAnimation {
+        value.scrollTo(msgs.last?.id)
+    }
+}
+```
 
 ## Custom Messages
 
-## Miscellaneous Modifiers
+AllujaMessages provides a simple way to implement your own custom messages. This implementation falls into two parts: 
+- Data implementation
+- Renderer implementation
+
+### Data Implementation
+
+You need to provide a `CustomItem` implementation in order to register as a valid `MessageKind`. The protocol for which is below:
+
+```swift
+public protocol CustomItem {
+    /// Unique ID for the custom item type, used to split up custom rederers into sepearate declarations
+    var id: String { get }
+
+    /// Some data for the custom type
+    var data: Any? { get }
+}
+```
+
+The `id` field is very important as it controls which renderer is used to display the custom message, which leads into the next section.
+
+### Renderer Implementation
+
+To display a custom message you need to add a renderer. A renderer is initialized as a modifier that is registered to a specific custom message ID (discussed in previous section). A renderer closure takes a message with a `.custom()` kind and a `CustomRendererInfo` structure with a suggested width and corner radius if you want to use the standard message style and returns a SwiftUI view. Multiple custom renderers may be chained to your `MessagesView`, but make sure to use a different ID for each renderer otherwise you may experience random renderer selection.
+
+```swift
+} // End of MessagesView declaration
+.customRenderer(forTypeWithID: "custom1") { message, _ in
+    if case .custom(let item) = message.kind {
+        Text("Custom 1: Hi, \(item.data as? String ?? "unknown")")
+            .foregroundColor(.accentColor)
+    } else {
+        Text("Error!")
+    }
+}
+.customRenderer(forTypeWithID: "custom2") { message, info in
+    HStack {
+        if message.alignment == .right {
+            Spacer()
+        }
+        
+        if case .custom(let item) = message.kind {
+            Text("Custom 2: Bye, \(item.data as? String ?? "unknown")")
+                .frame(width: info.suggestedWidth, alignment: message.alignment == .right ? .trailing : .leading)
+        } else {
+            Text("Error!")
+        }
+        
+        if message.alignment == .left {
+            Spacer()
+        }
+    }
+}
+```
+
+If you feel that your custom message cell is reusable and useful to a large number of people, open a pull request    to propose to have it converted into a built-in `MessageKind`.
+
+## Refreshing Messages
+
+If you want to be able to pull to refresh on the `MessagesView` for functionality such as loading earlier messages, you can use the SwiftUI `.refreshable()` modifier with an async function.
+
+## Formatting Timestamps
+
+The default timestamp display format shown during the timestamp drag gesture can be changed using the `.messageTimestampFormatter()` modifier and passing in a pre-configured `DateFormatter`.
+
+## Image Placeholders
+
+When loading images from a URL for messages with the `.image()` kind, you can specify a placeholder view to use while the image is being loaded with the `.messageImagePlaceholder()` modifier which takes a message and returns a SwiftUI view.

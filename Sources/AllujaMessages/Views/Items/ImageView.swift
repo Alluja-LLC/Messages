@@ -28,7 +28,7 @@ internal struct ImageView<MessageT: MessageType>: View {
         Group {
             if let image = image {
                 Image(uiImage: image)
-            } else if let placeholder = context.imagePlaceholder?(message) {
+            } else if let placeholder = context.messageImagePlaceholder?(message) {
                 placeholder
             } else {
                 ProgressView()

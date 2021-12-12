@@ -23,6 +23,17 @@ public enum MessageGroupingOption: Equatable {
     case collapseTimestamps(TimestampPositionAnchor)
 }
 
+/// Holds information that is useful for custom message renderers
+public struct CustomRendererInfo {
+    internal init(width: CGFloat, cornerRadius: CGFloat) {
+        suggestedWidth = width
+        suggestedCornerRadius = cornerRadius
+    }
+    
+    public let suggestedWidth: CGFloat
+    public let suggestedCornerRadius: CGFloat
+}
+
 internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     init(messages: [MessageT]) {
         updateMessages(messages)
@@ -31,9 +42,9 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     @Published var messages: [MessageContainer<MessageT>] = []
 
     var maxTimestampViewWidth: CGFloat {
-        showTimestampOnSwipe ? messages.reduce(CGFloat.zero, { res, message in
+        messages.reduce(CGFloat.zero, { res, message in
             max(res, message.size.width)
-        }) : 0
+        })
     }
 
     func updateMessages(_ messages: [MessageT]) {
@@ -126,13 +137,13 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     struct CustomRendererConfiguration: Identifiable {
         let id: String
 
-        let renderer: (MessageT, CGFloat) -> AnyView
+        let renderer: (MessageT, CustomRendererInfo) -> AnyView
     }
 
     /// Custom renderers added to handle custom message types
     @Published var customRenderers: [CustomRendererConfiguration] = []
 
-    func customRenderer(forID id: String) -> ((MessageT, CGFloat) -> AnyView)? {
+    func customRenderer(forID id: String) -> ((MessageT, CustomRendererInfo) -> AnyView)? {
         if let renderer = customRenderers.first(where: { $0.id == id }) {
             return renderer.renderer
         }
@@ -152,24 +163,25 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     }
 
     /// `DateFormatter` to use for messages
-    @Published var defaultDateFormatter: DateFormatter = DateFormatter()
+    @Published var messageTimestampFormatter: DateFormatter = DateFormatter()
 
     /// Whether or not to show message timestamps on a lswipe
-    @Published var showTimestampOnSwipe: Bool = false
+    @Published var showTimestampsOnSwipe: Bool = false
 
     /// Determines whether or not the current message is the last one in a group, defined in `MessagesView.swift` to allow for access to `messages` array
     @Published var messageEndsGroup: (MessageT) -> Bool = { _ in
         return true
+    } {
+        didSet {
+            updateMessages(messages.map { $0.message })
+        }
     }
-
-    /// Determines the scale to use for the `ImageView`
-    @Published var imageViewScale: CGFloat = 1.0
 
     /// Context menu for each message
     @Published var messageContextMenu: ((MessageT) -> AnyView)?
 
     /// Custom image placeholder
-    @Published var imagePlaceholder: ((MessageT) -> AnyView)?
+    @Published var messageImagePlaceholder: ((MessageT) -> AnyView)?
 
     /// Avatar view for message
     @Published var avatar: ((MessageT) -> AnyView)?
@@ -177,12 +189,18 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     /// Called when the messages view appears or messages array changes respectively, allows for control over the ScrollViewReader
     @Published var proxyOnAppear: ((ScrollViewProxy) -> Void)?
     @Published var proxyOnMessagesChange: ((ScrollViewProxy, [MessageT]) -> Void)?
+    
+    /// Message style changes
+    @Published var messageMaxWidth: ((GeometryProxy) -> CGFloat) = { geometry in
+        geometry.size.width * 3 / 4
+    }
+    @Published var messageCornerRadius: CGFloat = 8.0
 }
 
 extension MessagesView {
     /// Adds a custom renderer to use with a certain kind of custom message
-    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder renderer: @escaping (MessageT, CGFloat) -> CustomView) -> MessagesView {
-        self.context.customRenderers.append(.init(id: typeID, renderer: { (message, suggestedWidth) in
+    public func customRenderer<CustomView: View>(forTypeWithID typeID: String, @ViewBuilder renderer: @escaping (MessageT, CustomRendererInfo) -> CustomView) -> MessagesView {
+        context.customRenderers.append(.init(id: typeID, renderer: { (message, suggestedWidth) in
             return AnyView(renderer(message, suggestedWidth))
         }))
 
@@ -191,42 +209,35 @@ extension MessagesView {
 
     /// Sets custom grouping options
     public func groupingOptions(_ options: [MessageGroupingOption]) -> MessagesView {
-        self.context.groupingOptions = options
+        context.groupingOptions = options
 
         return self
     }
 
     /// Sets the `DateFormatter` to use for messages
-    public func dateFormatter(_ formatter: DateFormatter) -> MessagesView {
-        self.context.defaultDateFormatter = formatter
+    public func messageTimestampFormatter(_ formatter: DateFormatter) -> MessagesView {
+        context.messageTimestampFormatter = formatter
 
         return self
     }
 
     /// Sets whether or not to show message timestamp on swipe
-    public func showTimestampOnSwipe(_ showTimestamp: Bool) -> MessagesView {
-        self.context.showTimestampOnSwipe = showTimestamp
+    public func showTimestampsOnSwipe(_ showTimestamps: Bool) -> MessagesView {
+        context.showTimestampsOnSwipe = showTimestamps
 
         return self
     }
 
     /// Sets the rule for whether or not a message ends a group
     public func configureMessageEndsGroup(rule: @escaping (MessageT) -> Bool) -> MessagesView {
-        self.context.messageEndsGroup = rule
-
-        return self
-    }
-
-    /// Sets the scale for an `ImageView`
-    public func imageViewScale(_ scale: CGFloat) -> MessagesView {
-        self.context.imageViewScale = scale
+        context.messageEndsGroup = rule
 
         return self
     }
 
     /// Adds a view for all message headers customizable to each message
     public func messageHeader<HeaderView: View>(@ViewBuilder builder: @escaping (MessageT) -> HeaderView) -> MessagesView {
-        self.context.header = { message in
+        context.header = { message in
             AnyView(builder(message))
         }
 
@@ -235,7 +246,7 @@ extension MessagesView {
 
     /// Adds a view for all message footers customizable to each message
     public func messageFooter<FooterView: View>(@ViewBuilder builder: @escaping (MessageT) -> FooterView) -> MessagesView {
-        self.context.footer = { message in
+        context.footer = { message in
             AnyView(builder(message))
         }
 
@@ -244,7 +255,7 @@ extension MessagesView {
 
     /// Adds a context menu for all messages customizable to each message
     public func messageContextMenu<MenuItems: View>(@ViewBuilder builder: @escaping (MessageT) -> MenuItems) -> MessagesView {
-        self.context.messageContextMenu = { message in
+        context.messageContextMenu = { message in
             AnyView(builder(message))
         }
 
@@ -252,8 +263,8 @@ extension MessagesView {
     }
 
     /// Adds a placeholder view for all image views customizable to each image
-    public func imagePlaceholder<PlaceholderView: View>(@ViewBuilder builder: @escaping (MessageT) -> PlaceholderView) -> MessagesView {
-        self.context.imagePlaceholder = { imageItem in
+    public func messageImagePlaceholder<PlaceholderView: View>(@ViewBuilder builder: @escaping (MessageT) -> PlaceholderView) -> MessagesView {
+        self.context.messageImagePlaceholder = { imageItem in
             AnyView(builder(imageItem))
         }
 
@@ -276,6 +287,18 @@ extension MessagesView {
     
     public func proxyOnMessagesChange(perform action: @escaping (ScrollViewProxy, [MessageT]) -> Void) -> MessagesView {
         context.proxyOnMessagesChange = action
+        
+        return self
+    }
+    
+    public func messageMaxWidth(calculator: @escaping (GeometryProxy) -> CGFloat) -> MessagesView {
+        context.messageMaxWidth = calculator
+        
+        return self
+    }
+    
+    public func messageCornerRadius(_ cornerRadius: CGFloat) -> MessagesView {
+        context.messageCornerRadius = cornerRadius
         
         return self
     }

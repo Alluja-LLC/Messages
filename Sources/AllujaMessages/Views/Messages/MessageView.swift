@@ -9,6 +9,7 @@ import SwiftUI
 
 internal struct MessageView<MessageT: MessageType>: View {
     @Environment(\.messageWidth) private var width
+    @Environment(\.messageCornerRadius) private var cornerRadius
     @Binding var container: MessageContainer<MessageT>
     let context: MessagesViewContext<MessageT>
     let timestampOffset: CGFloat
@@ -72,7 +73,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                                     Spacer()
                                 }
 
-                                Text(context.defaultDateFormatter.string(from: message.timestamp))
+                                Text(context.messageTimestampFormatter.string(from: message.timestamp))
                                     .foregroundColor(.secondary)
                                     .font(.footnote)
                                     .bold()
@@ -118,7 +119,7 @@ internal struct MessageView<MessageT: MessageType>: View {
                             .frame(width: width, alignment: messageAlignment)
                     case .custom(let customItem):
                         if let renderer = context.customRenderer(forID: customItem.id) {
-                            renderer(message, width)
+                            renderer(message, CustomRendererInfo(width: width, cornerRadius: cornerRadius))
                         } else {
                             Text("No Renderer Found for ID \(customItem.id) :(")
                         }

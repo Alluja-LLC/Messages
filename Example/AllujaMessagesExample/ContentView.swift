@@ -15,9 +15,12 @@ private let senders: [MessageAlignment] = [
 struct ContentView: View {
     @State private var messages: [Message]
     @State private var messageBar: String = ""
+    
+    @State private var showTimestamps: Bool = true
     @State private var footerContentChange: Bool = false
     @State private var groupMessages: Bool = false
     @State private var groupTimestamps: Bool = false
+    
     let messageFormatter: DateFormatter
 
     init() {
@@ -46,7 +49,7 @@ struct ContentView: View {
                 }
             })
                 .groupingOptions(groupingOptions)
-            .dateFormatter(messageFormatter)
+            .messageTimestampFormatter(messageFormatter)
             .messageContextMenu { message in
                 Text("\(message.id)")
                 Text("Menu")
@@ -57,7 +60,7 @@ struct ContentView: View {
                     .bold()
                     .foregroundColor(.gray)
             }
-            .messageFooter { message in
+            .messageFooter { _ in
                 if footerContentChange {
                     EmptyView()
                 } else {
@@ -94,7 +97,7 @@ struct ContentView: View {
                     Text("Error!")
                 }
             }
-            .customRenderer(forTypeWithID: "custom2") { message, suggestedWidth in
+            .customRenderer(forTypeWithID: "custom2") { message, info in
                 HStack {
                     if message.alignment == .right {
                         Spacer()
@@ -102,7 +105,7 @@ struct ContentView: View {
                     
                     if case .custom(let item) = message.kind {
                         Text("Custom 2: Bye, \(item.data as? String ?? "unknown")")
-                            .frame(width: suggestedWidth, alignment: message.alignment == .right ? .trailing : .leading)
+                            .frame(width: info.suggestedWidth, alignment: message.alignment == .right ? .trailing : .leading)
                     } else {
                         Text("Error!")
                     }
@@ -112,6 +115,7 @@ struct ContentView: View {
                     }
                 }
             }
+            .showTimestampsOnSwipe(showTimestamps)
             .refreshable {
                 print("REF")
             }
@@ -131,6 +135,7 @@ struct ContentView: View {
 
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Menu(content: {
+                        Toggle("Show Timestamps", isOn: $showTimestamps)
                         Toggle("Change Footer", isOn: $footerContentChange)
                         Toggle("Group Messages", isOn: $groupMessages)
                         Toggle("Group Timestamps", isOn: $groupTimestamps)

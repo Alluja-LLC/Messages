@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol CustomItem {
-    /// An ID for the custom item type, will be used to split up custom rederers into sepearate declarations
+    /// Unique ID for the custom item type, used to split up custom rederers into sepearate declarations
     var id: String { get }
 
     /// Some data for the custom type

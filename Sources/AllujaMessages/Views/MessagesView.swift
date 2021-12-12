@@ -30,7 +30,7 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
             }
 
             // Split if last message was sent more than 5 minutes ago or the sender changes
-            return message.timestamp.addingTimeInterval(5 * 60) < messages[index + 1].timestamp || message.id != messages[index + 1].id
+            return message.timestamp.addingTimeInterval(5 * 60) < messages[index + 1].timestamp
         }
 
         self.context = context
@@ -65,19 +65,22 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                         .listRowSeparator(.hidden)
                         .offset(x: dragOffset)
                         .animation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 1), value: dragOffset)
-                        .gesture(
-                            DragGesture(minimumDistance: 25.0)
-                                .onChanged { value in
-                                    dragOffset = max(min(value.translation.width, 0), -context.maxTimestampViewWidth)
-                                }
-                                .onEnded { _ in
-                                    dragOffset = .zero
-                                }
-                        )
+                        .if(context.showTimestampsOnSwipe) {
+                            $0.gesture(
+                                DragGesture(minimumDistance: 25.0)
+                                    .onChanged { value in
+                                        dragOffset = max(min(value.translation.width, 0), -context.maxTimestampViewWidth)
+                                    }
+                                    .onEnded { _ in
+                                        dragOffset = .zero
+                                    }
+                            )
+                        }
                     }
                 }
                 .listStyle(PlainListStyle())
-                .messageWidth(geometry.size.width * 3 / 4)
+                .messageWidth(context.messageMaxWidth(geometry))
+                .messageCornerRadius(context.messageCornerRadius)
                 .if(refresh != nil) {
                     $0.refreshable {
                         await refresh!.callAsFunction()
@@ -89,7 +92,6 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
                         focusInput = false
                     }
                 }
-                .imageViewScale(context.imageViewScale)
             }
 
             inputBar()
