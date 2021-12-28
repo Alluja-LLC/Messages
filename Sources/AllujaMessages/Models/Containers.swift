@@ -41,7 +41,7 @@ internal struct MessageContainer<MessageT: MessageType>: Identifiable, Equatable
     var timestampFlag: MessageGroupTimestampFlag = .normal
 
     var id: String {
-        message.id
+        message.messageID
     }
 
     func groupFlagsEmptyOrContains(_ flag: MessageGroupFlag) -> Bool {

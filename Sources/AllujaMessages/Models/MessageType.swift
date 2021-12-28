@@ -12,9 +12,9 @@ public enum MessageAlignment {
     case left, right
 }
 
-public protocol MessageType: Identifiable, Equatable {
+public protocol MessageType: Equatable {
     /// Unique ID that identifies this message
-    var id: String { get }
+    var messageID: String { get }
 
     /// When the message was sent
     var timestamp: Date { get }

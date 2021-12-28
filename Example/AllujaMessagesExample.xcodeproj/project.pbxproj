@@ -15,8 +15,8 @@
 		E4CFD2342748322E00E42CB7 /* AllujaMessagesExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2332748322E00E42CB7 /* AllujaMessagesExampleUITests.swift */; };
 		E4CFD2362748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD2352748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift */; };
 		E4CFD246274D20C400E42CB7 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD245274D20C400E42CB7 /* Message.swift */; };
-		E4CFD249274D211500E42CB7 /* AllujaMessages in Frameworks */ = {isa = PBXBuildFile; productRef = E4CFD248274D211500E42CB7 /* AllujaMessages */; };
 		E4CFD24C274D245B00E42CB7 /* MessageGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4CFD24B274D245B00E42CB7 /* MessageGenerator.swift */; };
+		E4E1FAEE277BB1C40063BF56 /* AllujaMessages in Frameworks */ = {isa = PBXBuildFile; productRef = E4E1FAED277BB1C40063BF56 /* AllujaMessages */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,9 +47,10 @@
 		E4CFD22F2748322E00E42CB7 /* AllujaMessagesExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AllujaMessagesExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4CFD2332748322E00E42CB7 /* AllujaMessagesExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleUITests.swift; sourceTree = "<group>"; };
 		E4CFD2352748322E00E42CB7 /* AllujaMessagesExampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllujaMessagesExampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		E4CFD2432749640100E42CB7 /* AllujaMessages */ = {isa = PBXFileReference; lastKnownFileType = folder; name = AllujaMessages; path = ..; sourceTree = "<group>"; };
 		E4CFD245274D20C400E42CB7 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		E4CFD24B274D245B00E42CB7 /* MessageGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageGenerator.swift; sourceTree = "<group>"; };
+		E4E1FAEB277BB1950063BF56 /* AllujaMessages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AllujaMessages; path = ..; sourceTree = "<group>"; };
+		E4E1FAEC277BB1AA0063BF56 /* AllujaMessages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = AllujaMessages; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4CFD249274D211500E42CB7 /* AllujaMessages in Frameworks */,
+				E4E1FAEE277BB1C40063BF56 /* AllujaMessages in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +87,7 @@
 				E4CFD2282748322E00E42CB7 /* AllujaMessagesExampleTests */,
 				E4CFD2322748322E00E42CB7 /* AllujaMessagesExampleUITests */,
 				E4CFD2162748322C00E42CB7 /* Products */,
+				E4E1FAEA277BB0CC0063BF56 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -140,7 +142,7 @@
 		E4CFD2422749640100E42CB7 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				E4CFD2432749640100E42CB7 /* AllujaMessages */,
+				E4E1FAEC277BB1AA0063BF56 /* AllujaMessages */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -161,6 +163,14 @@
 			path = Generators;
 			sourceTree = "<group>";
 		};
+		E4E1FAEA277BB0CC0063BF56 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E4E1FAEB277BB1950063BF56 /* AllujaMessages */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -178,7 +188,7 @@
 			);
 			name = AllujaMessagesExample;
 			packageProductDependencies = (
-				E4CFD248274D211500E42CB7 /* AllujaMessages */,
+				E4E1FAED277BB1C40063BF56 /* AllujaMessages */,
 			);
 			productName = AllujaMessagesExample;
 			productReference = E4CFD2152748322C00E42CB7 /* AllujaMessagesExample.app */;
@@ -648,7 +658,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E4CFD248274D211500E42CB7 /* AllujaMessages */ = {
+		E4E1FAED277BB1C40063BF56 /* AllujaMessages */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AllujaMessages;
 		};

@@ -44,7 +44,7 @@ internal struct MessagePreview: MessageType {
         .left
     }
 
-    var id: String {
+    var messageID: String {
         "Hi"
     }
 

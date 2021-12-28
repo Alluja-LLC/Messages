@@ -35,7 +35,7 @@ struct CustomMessage: CustomItem {
 struct Message: MessageType {
     init(kind: MessageKind, alignment: MessageAlignment) {
         self.alignment = alignment
-        self.id = UUID().uuidString
+        self.messageID = UUID().uuidString
         self.kind = kind
     }
 
@@ -44,10 +44,10 @@ struct Message: MessageType {
     let kind: MessageKind
 
     static func == (lhs: Message, rhs: Message) -> Bool {
-        lhs.id == rhs.id
+        lhs.messageID == rhs.messageID
     }
 
-    let id: String
+    let messageID: String
     
     let alignment: MessageAlignment
 }

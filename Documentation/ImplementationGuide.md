@@ -14,7 +14,7 @@ public enum MessageAlignment {
 
 public protocol MessageType: Identifiable, Equatable {
     /// Unique ID that identifies this message
-    var id: String { get }
+    var messageID: String { get }
 
     /// When the message was sent
     var timestamp: Date { get }

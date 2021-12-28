@@ -51,11 +51,11 @@ struct ContentView: View {
                 .groupingOptions(groupingOptions)
             .messageTimestampFormatter(messageFormatter)
             .messageContextMenu { message in
-                Text("\(message.id)")
+                Text("\(message.messageID)")
                 Text("Menu")
             }
             .messageHeader { message in
-                Text(message.id)
+                Text(message.messageID)
                     .font(.footnote)
                     .bold()
                     .foregroundColor(.gray)
@@ -81,12 +81,12 @@ struct ContentView: View {
             }
             .proxyOnAppear { value in
                 withAnimation {
-                    value.scrollTo(messages.last?.id)
+                    value.scrollTo(messages.last?.messageID)
                 }
             }
             .proxyOnMessagesChange { value, msgs in
                 withAnimation {
-                    value.scrollTo(msgs.last?.id)
+                    value.scrollTo(msgs.last?.messageID)
                 }
             }
             .customRenderer(forTypeWithID: "custom1") { message, _ in
