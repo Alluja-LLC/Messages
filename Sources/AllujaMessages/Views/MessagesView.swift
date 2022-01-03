@@ -37,7 +37,7 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
     }
 
     public var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             GeometryReader { geometry in
                 ScrollViewReader { value in
                     List {
