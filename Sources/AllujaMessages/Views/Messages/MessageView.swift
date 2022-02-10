@@ -10,7 +10,7 @@ import SwiftUI
 internal struct MessageView<MessageT: MessageType>: View {
     @Environment(\.messageWidth) private var width
     @Environment(\.messageCornerRadius) private var cornerRadius
-    @Binding var container: MessageContainer<MessageT>
+    let container: MessageContainer<MessageT>
     let context: MessagesViewContext<MessageT>
     let timestampOffset: CGFloat
 
@@ -67,12 +67,11 @@ internal struct MessageView<MessageT: MessageType>: View {
             ZStack {
                 if container.timestampFlag != .hidden {
                     HStack {
-                        ChildSizeReader(size: $container.size) {
                             VStack {
                                 if container.timestampFlag == .bottom {
                                     Spacer()
                                 }
-
+                                
                                 Text(context.messageTimestampFormatter.string(from: message.timestamp))
                                     .foregroundColor(.secondary)
                                     .font(.footnote)
@@ -85,7 +84,6 @@ internal struct MessageView<MessageT: MessageType>: View {
                                     Spacer()
                                 }
                             }
-                        }
                         Spacer()
                     }
                 }
@@ -168,6 +166,6 @@ internal struct MessageView<MessageT: MessageType>: View {
 
 private struct MessageView_Previews: PreviewProvider {
     static var previews: some View {
-        MessageView<MessagePreview>(container: .constant(MessageContainer<MessagePreview>(message: MessagePreview())), context: MessagesViewContext<MessagePreview>(messages: []), timestampOffset: 0)
+        MessageView<MessagePreview>(container: MessageContainer<MessagePreview>(message: MessagePreview()), context: MessagesViewContext<MessagePreview>(), timestampOffset: 0)
     }
 }

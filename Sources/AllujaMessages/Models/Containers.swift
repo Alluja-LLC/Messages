@@ -47,6 +47,4 @@ internal struct MessageContainer<MessageT: MessageType>: Identifiable, Equatable
     func groupFlagsEmptyOrContains(_ flag: MessageGroupFlag) -> Bool {
         groupFlags.isEmpty || groupFlags.contains(flag)
     }
-
-    var size: CGSize = .zero
 }

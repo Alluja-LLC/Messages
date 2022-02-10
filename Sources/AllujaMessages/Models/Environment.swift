@@ -35,6 +35,7 @@ internal extension View {
     func messageCornerRadius(_ cornerRadius: CGFloat) -> some View {
         environment(\.messageCornerRadius, cornerRadius)
     }
+    
     func messageWidth(_ width: CGFloat) -> some View {
         environment(\.messageWidth, width)
     }

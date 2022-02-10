@@ -62,6 +62,6 @@ internal struct ImageView<MessageT: MessageType>: View {
 
 private struct ImageView_Previews: PreviewProvider {
     static var previews: some View {
-        ImageView(forMessage: MessagePreview(), withContext: MessagesViewContext<MessagePreview>(messages: []))
+        ImageView(forMessage: MessagePreview(), withContext: MessagesViewContext<MessagePreview>())
     }
 }

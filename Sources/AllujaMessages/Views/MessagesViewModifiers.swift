@@ -35,104 +35,7 @@ public struct CustomRendererInfo {
 }
 
 internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
-    init(messages: [MessageT]) {
-        updateMessages(messages)
-    }
-
-    @Published var messages: [MessageContainer<MessageT>] = []
-
-    var maxTimestampViewWidth: CGFloat {
-        messages.reduce(CGFloat.zero, { res, message in
-            max(res, message.size.width)
-        })
-    }
-
-    func updateMessages(_ messages: [MessageT]) {
-        // Iterate over each message and see if the next one is last
-        var completeContainers: [MessageContainer<MessageT>] = []
-        // Whether or not to attempt to place a footer on the next iteration
-        var footerFallthrough: Bool = false
-        for (i, message) in messages.sorted(by: { $0.timestamp < $1.timestamp }).enumerated() {
-            // Figure out what options are needed for each message
-            var flags: Set<MessageGroupFlag> = []
-            var timestampFlag: MessageGroupTimestampFlag = .hidden
-
-            // If this is the first message OR the last message ends the group then add flag
-            if completeContainers.isEmpty || completeContainers[completeContainers.index(before: i)].groupFlags.contains(.endGroup) {
-                if case .collapseTimestamps(let anchor) = groupingOptions.first(where: { item in
-                    if case .collapseTimestamps(_) = item {
-                        return true
-                    }
-                    return false
-                }), anchor == .top {
-                    timestampFlag = .top
-                }
-
-                flags.insert(.startGroup)
-            }
-
-            if messageEndsGroup(message) {
-                if case .collapseTimestamps(let anchor) = groupingOptions.first(where: { item in
-                    if case .collapseTimestamps(_) = item {
-                        return true
-                    }
-                    return false
-                }), anchor == .bottom {
-                    timestampFlag = .bottom
-                }
-
-                flags.insert(.endGroup)
-            }
-
-            // If there aren't any timestamp grouping options, then display timestamp normally
-            if case .collapseTimestamps(_) = groupingOptions.first(where: { item in
-                if case .collapseTimestamps(_) = item {
-                    return true
-                }
-                return false
-            }) {
-
-            } else {
-                timestampFlag = .normal
-            }
-
-            switch message.kind {
-            case .system(_):
-                if flags.contains(.endGroup) && !flags.contains(.startGroup) && i != messages.startIndex {
-                    completeContainers[completeContainers.index(before: completeContainers.endIndex)].groupFlags.insert(.renderFooter)
-                } else if flags.contains(.startGroup) && !flags.contains(.endGroup) {
-                    footerFallthrough = true
-                }
-            default:
-                if groupingOptions.contains(.collapseEnclosingViews) {
-                    if flags.contains(.startGroup) {
-                        flags.insert(.renderHeader)
-                    }
-
-                    if flags.contains(.endGroup) || footerFallthrough {
-                        flags.insert(.renderFooter)
-                        footerFallthrough = false
-                    }
-                } else {
-                    flags.insert(.renderHeader)
-                    flags.insert(.renderFooter)
-                }
-
-                if groupingOptions.contains(.collapseProfilePicture) {
-                    if flags.contains(.endGroup) {
-                        flags.insert(.renderProfile)
-                    } else {
-                        flags.insert(.renderClearProfile)
-                    }
-                } else {
-                    flags.insert(.renderProfile)
-                }
-            }
-            completeContainers.append(.init(message: message, groupFlags: flags, timestampFlag: timestampFlag))
-        }
-
-        self.messages = completeContainers
-    }
+    init() {}
 
     struct CustomRendererConfiguration: Identifiable {
         let id: String
@@ -156,11 +59,7 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     @Published var footer: ((MessageT) -> AnyView)?
 
     /// Configured grouping options
-    @Published var groupingOptions: [MessageGroupingOption] = [] {
-        didSet {
-            updateMessages(messages.map { $0.message })
-        }
-    }
+    @Published var groupingOptions: [MessageGroupingOption] = []
 
     /// `DateFormatter` to use for messages
     @Published var messageTimestampFormatter: DateFormatter = DateFormatter()
@@ -171,10 +70,6 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     /// Determines whether or not the current message is the last one in a group, defined in `MessagesView.swift` to allow for access to `messages` array
     @Published var messageEndsGroup: (MessageT) -> Bool = { _ in
         return true
-    } {
-        didSet {
-            updateMessages(messages.map { $0.message })
-        }
     }
 
     /// Context menu for each message
@@ -194,6 +89,7 @@ internal class MessagesViewContext<MessageT: MessageType>: ObservableObject {
     @Published var messageMaxWidth: ((GeometryProxy) -> CGFloat) = { geometry in
         geometry.size.width * 3 / 4
     }
+    
     @Published var messageCornerRadius: CGFloat = 8.0
 }
 

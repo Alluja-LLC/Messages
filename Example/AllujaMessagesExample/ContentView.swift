@@ -48,7 +48,7 @@ struct ContentView: View {
                     messageBar = ""
                 }
             })
-                .groupingOptions(groupingOptions)
+            .groupingOptions(groupingOptions)
             .messageTimestampFormatter(messageFormatter)
             .messageContextMenu { message in
                 Text("\(message.messageID)")
