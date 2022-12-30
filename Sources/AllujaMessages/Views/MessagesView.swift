@@ -141,43 +141,16 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
 
             GeometryReader { geometry in
                 ScrollViewReader { value in
-                    List {
-                        Group {
-                            ForEach(containerizedMessages, id: \.id) { message in
-                                MessageView(container: message, context: context, timestampOffset: geometry.size.width)
-                                    .padding([.top, .bottom], 2)
-                                    .contentShape(Rectangle())
-                                    .if(context.messageContextMenu != nil) {
-                                        $0.contextMenu {
-                                            context.messageContextMenu!(message.message)
-                                        }
-                                    }
-                                    .id(message.id)
-                            }
+                    if #available(iOS 16, *) {
+                        ScrollView {
+                            inner(geometry: geometry, value: value)
                         }
-                        .padding([.leading, .trailing], 8)
-                        .onAppear {
-                            context.proxyOnAppear?(value)
-                        }
-                        .onChange(of: messages) { messages in
-                            context.proxyOnMessagesChange?(value, messages)
-                        }
-                        .listRowInsets(EdgeInsets())
-                        .listRowSeparator(.hidden)
-                        .offset(x: dragOffset)
-                        .animation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 1), value: dragOffset)
-                        .if(context.showTimestampsOnSwipe) {
-                            $0.gesture(
-                                DragGesture(minimumDistance: 25.0)
-                                    .onChanged { value in
-                                        dragOffset = max(min(value.translation.width, 0), -maxOffset.width)
-                                    }
-                                    .onEnded { _ in
-                                        dragOffset = .zero
-                                    }
-                            )
+                    } else {
+                        List {
+                            inner(geometry: geometry, value: value)
                         }
                     }
+                    
                 }
                 .listStyle(PlainListStyle())
                 .messageCornerRadius(context.messageCornerRadius)
@@ -197,6 +170,44 @@ public struct MessagesView<MessageT: MessageType, InputBarT: View>: View {
 
             inputBar()
                 .focused($focusInput)
+        }
+    }
+    
+    private func inner(geometry: GeometryProxy, value: ScrollViewProxy) -> some View {
+        Group {
+            ForEach(containerizedMessages, id: \.id) { message in
+                MessageView(container: message, context: context, timestampOffset: geometry.size.width)
+                    .padding([.top, .bottom], 2)
+                    .contentShape(Rectangle())
+                    .if(context.messageContextMenu != nil) {
+                        $0.contextMenu {
+                            context.messageContextMenu!(message.message)
+                        }
+                    }
+                    .id(message.id)
+            }
+        }
+        .padding([.leading, .trailing], 8)
+        .onAppear {
+            context.proxyOnAppear?(value)
+        }
+        .onChange(of: messages) { messages in
+            context.proxyOnMessagesChange?(value, messages)
+        }
+        .listRowInsets(EdgeInsets())
+        .listRowSeparator(.hidden)
+        .offset(x: dragOffset)
+        .animation(.spring(response: 0.4, dampingFraction: 0.8, blendDuration: 1), value: dragOffset)
+        .if(context.showTimestampsOnSwipe) {
+            $0.gesture(
+                DragGesture(minimumDistance: 25.0)
+                    .onChanged { value in
+                        dragOffset = max(min(value.translation.width, 0), -maxOffset.width)
+                    }
+                    .onEnded { _ in
+                        dragOffset = .zero
+                    }
+            )
         }
     }
 }
